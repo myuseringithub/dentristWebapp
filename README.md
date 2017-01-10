@@ -1,3 +1,16 @@
+USAGE: 
+
+    • appContent should be copied: 
+      from https://drive.google.com/drive/folders/0B7TY-evjcgCUdUpjLXA2aGYwbHM?usp=sharing 
+      to projectRoot/content folder.
+      
+    • docker-compose -f ./setup/production.docker-compose.yml up --build
+    
+"volume" folder will be created.
+
+___________________________________________
+
+
 Check php info: `phpinfo();`
 
 App structure:
