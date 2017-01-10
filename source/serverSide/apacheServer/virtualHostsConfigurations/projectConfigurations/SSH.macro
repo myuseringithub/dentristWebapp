@@ -1,0 +1,8 @@
+<Macro SSH>
+    # http://serverfault.com/questions/689942/apaches-deprecated-sslcertificatechainfile-directive-ah02559
+    SSLEngine on
+    SSLCertificateFile ${SSLCertificatesPath}/dentrist.combined.crt
+    SSLCertificateKeyFile ${SSLCertificatesPath}/dentrist.key
+    # SSLCertificateChainFile ${SSLCertificatesPath}/gd_bundle-g2-g1.crt
+    Include ${ApacheConfigPath}/sharedConfigurations/shared-settings.conf
+</Macro>

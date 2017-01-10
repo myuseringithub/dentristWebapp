@@ -1,0 +1,97 @@
+
+<dom-module id="scroll-top" noscript>
+
+	<style>
+    /* =============================================
+                        SCROLL TOP
+       ============================================= */
+        paper-button {
+            bottom: 30px;
+			width: 65px;
+			height: 48px;
+			min-width: 0;
+			margin: 0;
+			text-transform: none;
+            position: fixed;
+            right: 15px;
+            z-index: 990;
+			background: rgb(252,252,252);
+            background: -moz-linear-gradient(top, rgba(252,252,252,1) 0%, rgba(241,241,241,1) 100%);
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(241,241,241,1)));
+            background: -webkit-linear-gradient(top, rgba(252,252,252,1) 0%,rgba(241,241,241,1) 100%);
+            background: -o-linear-gradient(top, rgba(252,252,252,1) 0%,rgba(241,241,241,1) 100%);
+            background: -ms-linear-gradient(top, rgba(252,252,252,1) 0%,rgba(241,241,241,1) 100%);
+            background: linear-gradient(to bottom, rgba(252,252,252,1) 0%,rgba(241,241,241,1) 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#f1f1f1',GradientType=0 );
+
+            color: #666;
+            display: block;
+			text-decoration: none;
+            font-weight: bold;
+            line-height: 1em;
+            text-align: center;
+		}
+        paper-button:hover {
+            color: #444;
+            text-decoration: none;
+        }
+		core-icon[icon="fa:chevron-up"] {
+			width: 14px;
+			height: 14px;
+		}
+    </style>
+
+<template>
+
+    <paper-button role="button" raised tabindex="0">
+       	<div>
+            <core-icon icon="fa:chevron-up"></core-icon>
+            <br />
+            <span>Top</span>
+        </div>
+    </paper-button>
+
+</template>
+</dom-module>
+
+
+<script>
+
+	Polymer({
+		is: "scroll-top",
+		properties:{
+ 			field:{ type: String },
+ 			titlebook:{ type: String },
+ 			status:{ type: String },
+ 			linkbook:{ type: String }
+
+		}
+	});
+
+
+	//SCROLL TOP & Landscape Mode for phones
+	jQuery(document).ready(function($) {
+
+		var $scrolltotop = $("scroll-top");
+		$scrolltotop.css('display', 'none');
+
+		$(function () {
+			$(window).scroll(function () {
+				if ($(this).scrollTop() > 100) {
+					$scrolltotop.css('display', 'block');
+				} else {
+					$scrolltotop.css('display', 'none');
+				}
+			});
+
+			$scrolltotop.click(function () {
+				$('body,html').animate({
+					scrollTop: 0
+				}, 'fast');
+				return false;
+			});
+		});
+	});
+
+
+</script>

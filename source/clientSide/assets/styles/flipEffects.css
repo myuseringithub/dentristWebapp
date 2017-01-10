@@ -1,0 +1,70 @@
+/* http://davidwalsh.name/css-flip
+*/
+
+/* entire container, keeps perspective
+*/
+.flip-container {
+	perspective: 1000;
+	-webkit-perspective: 1000; /* Chrome, Safari, Opera */
+}
+
+	/* flip the pane when hovered
+	.flip-container:hover .flipper, .flip-container.hover .flipper {
+		transform: rotateY(180deg);
+		-ms-transform:rotateY(180deg); /* IE 9 /
+		-webkit-transform:rotateY(180deg); /* Opera, Chrome, and Safari /
+	}
+	*/
+
+.flip-container, .front, .back {
+}
+
+/* Toggle Flip - On button click */
+.flip-container.hover .flipper, .flip-container.flip .flipper {
+	transform: rotateY(180deg);
+	-ms-transform:rotateY(180deg); /* IE 9 */
+	-webkit-transform:rotateY(180deg); /* Opera, Chrome, and Safari */
+}
+
+
+/* flip speed goes here */
+.flipper {
+	transition: 0.6s;
+	transform-style: preserve-3d;
+	-webkit-transform-style: preserve-3d; /* Chrome, Safari, Opera */
+	position: relative;
+}
+
+/* hide back of pane during swap */
+.front, .back {
+	backface-visibility: hidden;
+	-webkit-backface-visibility:hidden; /* Chrome, Safari, Opera */
+
+	background: #fff;
+	/*border: 1px solid #E1E1E1;  original color of border is  #E1E1E1 but #D1D1D1 is darker*/
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+	box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+	border-radius: 5px;
+}
+
+/* front pane, placed above back */
+.front {
+	width: 100%;
+	z-index: 2;
+}
+
+/* back, initially hidden pane */
+.back {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+
+	width: 100%;
+	transform: rotateY(180deg);
+	-ms-transform:rotateY(180deg); /* IE 9 */
+	-webkit-transform:rotateY(180deg); /* Opera, Chrome, and Safari */
+
+	cursor: pointer;
+}

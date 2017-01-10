@@ -1,0 +1,50 @@
+/* =============================================
+   LOADER FOR PAGE & NEW POSTS
+   ============================================= */
+/*/
+PAGE LOADER /*/
+#ajax-loader-masonry {
+margin-left: -12px;
+position: absolute;
+top: 48%;
+left: 50%;
+}
+.ajax-loader {
+background: transparent url("../images/graphics-dentist.gif");
+background-size: contain;
+background-repeat: no-repeat;
+background-position-y: 0;
+height: 115px;
+width: 68px;
+margin: 0 auto;
+vertical-align: middle;
+}
+.ajax-loader center {
+	position: absolute;
+	bottom: 0;
+	left: 20px;
+}
+/*/
+POSTS LOADER  /*/
+#infscr-loading {
+background: #000;
+bottom: 0;
+color: #fff;
+left: 50%;
+margin-left: -60px;
+opacity: 0.3;
+padding: 5px;
+position: fixed;
+text-align: center;
+width: 120px;
+z-index: 100000;
+-webkit-border-top-left-radius: 5px;
+-webkit-border-top-right-radius: 5px;
+-moz-border-radius-topleft: 5px;
+-moz-border-radius-topright: 5px;
+border-top-left-radius: 5px;
+border-top-right-radius: 5px;
+}
+#infscr-loading img {
+width: 43px;
+}

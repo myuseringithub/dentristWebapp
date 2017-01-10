@@ -1,0 +1,7 @@
+<Macro Logs $hostname>
+    # Possible values include: debug, info, notice, warn, error, crit,
+    # alert, emerg.
+    LogLevel warn
+    ErrorLog ${APACHE_LOG_DIR}/$hostname.error.log
+    CustomLog ${APACHE_LOG_DIR}/$hostname.access.log combined
+</Macro>

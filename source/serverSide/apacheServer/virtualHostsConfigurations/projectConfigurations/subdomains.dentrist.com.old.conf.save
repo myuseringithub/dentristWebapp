@@ -1,0 +1,73 @@
+# http://serverfault.com/questions/567320/difference-between-default-and-in-virtualhost-context
+# This configuration uses "name based virtualhosting"
+
+# Redirect all port 80 requests to https.
+<VirtualHost *:80>
+    ServerName other.dentrist.com
+    ServerAlias *.dentrist.com
+    Redirect permanent / https://%-3.dentrist.com/
+</VirtualHost>
+
+# configure Apache to listen upon the SSL port (443)
+<IfModule mod_ssl.c>
+    <VirtualHost *:443>
+        ServerAdmin webmaster@localhost
+        ServerName other.dentrist.com
+        ServerAlias *.dentrist.com
+
+        UseCanonicalName Off
+        DocumentRoot /var/www/subdomains.dentrist.com/
+        VirtualDocumentRoot /var/www/subdomains.dentrist.com/%-3/public
+
+        # Reference the uploads folder in your Documents
+        AliasMatch ^/content/uploads/(.*) /var/www/wordpress/content/uploads/$1
+
+        # Reference the mu-plugins folder in your Documents
+        # AliasMatch ^/content/mu-plugins/(.*) /var/www/wordpress/content/mu-plugins/$1
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+        ErrorLog ${APACHE_LOG_DIR}/%-3.dentrist.com.error.log
+        CustomLog ${APACHE_LOG_DIR}/%-3.dentrist.com.access.log combined
+
+        SSLEngine on
+        SSLCertificateFile /etc/apache2/ssl/all_subdomains.crt
+        SSLCertificateKeyFile /etc/apache2/ssl/all_subdomains.key
+
+        Include /etc/apache2/sites-available/response-headers.conf
+        # <Files "/var/www/dev.dentrist.com/config/wordpress.php">order allow,deny deny from all</Files>
+        # <Files "/var/www/dev.dentrist.com/public/.htaccess">order allow,deny deny from all</Files>
+        
+        <FilesMatch "\.(cgi|shtml|phtml|php)$">
+            SSLOptions +StdEnvVars
+        </FilesMatch>
+
+        <Directory />
+            SSLRequireSSL
+            Options FollowSymLinks
+            AllowOverride None
+        </Directory>
+
+        <Directory /var/www/subdomains.dentrist.com/>
+            Options Indexes FollowSymLinks MultiViews
+            AllowOverride All
+            Order allow,deny
+            allow from all
+        </Directory>
+
+        ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+        <Directory /usr/lib/cgi-bin>
+            AllowOverride None
+            Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+            Order allow,deny
+            Allow from all
+            SSLOptions +StdEnvVars
+        </Directory>
+        BrowserMatch "MSIE [2-6]" \
+            nokeepalive ssl-unclean-shutdown \
+            downgrade-1.0 force-response-1.0
+        BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+    </VirtualHost>
+</IfModule>
+

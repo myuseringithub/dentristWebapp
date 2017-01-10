@@ -1,0 +1,132 @@
+<dom-module id="examinations-view">
+
+  <template>
+	<style>
+	</style>
+
+  <div>
+    <paper-material id="mcqspinner" elevation="1" style="margin: 40px auto 40px auto; display: flex; background-color: white; width: 50px; height: 50px; border-radius: 50%;">
+      <paper-spinner  active style="margin: auto; display: flex; background-color: white;"></paper-spinner>
+    </paper-material>
+    <paper-material elevation="0" id="paperMaterial" class="questionContainer horizontal layout center " style="display: none; background-color: white; margin: 0px 0 20px 0; ">
+
+      <div id="filterbyyear" style="margin-right: 7px; margin-left: 7px;">
+        <paper-menu-button style="margin: auto; position: relative;" horizontal-align="left" allow-outside-scroll>
+          <paper-button class="dropdown-trigger" style="" alt="menu">Year</paper-button>
+          <paper-menu class="dropdown-content" id="yearpapermenu" selected="0" style="display: block; max-width: 250px; ">
+            <paper-item align="center" style="cursor: pointer; text-align: center; margin: auto; padding: auto;" id="all"  on-tap="yearselected">All</paper-item>
+            <template is="dom-repeat"
+                  items="{{examinations}}"
+                  as="examination"
+                  >
+              <paper-item style="cursor: pointer; " id="{{examination.ID}}" on-tap="yearselected">{{examination.post_title}}</paper-item>
+            </template>
+          </paper-menu>
+        </paper-menu-button>
+      </div>
+
+      <div id="searchquestions" class="flex" style="margin-right: 7px; margin-left: 7px;">
+        <paper-input id="search" label="Search Questions" on-keydown="searchCheckEnter" style="text-align: center; width: 100%;">
+        </paper-input>
+        <!-- <span>{{filterQuestionsObject.string}}</span> -->
+      </div>
+
+    </paper-material>
+
+    <template id="examinationsRepeat"
+          is="dom-repeat"
+          items="{{examinations}}"
+          as="examination"
+          filter="{{computeFilter(filterExaminationsObject)}}"
+          index-as="examination_no"
+          filterQuestionsObject="{{filterQuestionsObject}}"
+          >
+      <questions-list examination="{{examination}}" questions="{{examination.MCQs}}" filterQuestionsObject="{{filterQuestionsObject}}"></questions-list>
+    </template>
+
+  </div>
+  <div id="nexprevFabButton" style="position: fixed; bottom:28px; left:16px; z-index: 0; display: none;">
+    <paper-fab icon="hardware:keyboard-arrow-up" title="" class="" style="  background: #3F51B5; margin-bottom: 5px;" onclick="Controller.headerExpansion.previousButton()"></paper-fab>
+    <paper-fab icon="hardware:keyboard-arrow-down" title="" class="" style=" background: #3F51B5;" onclick="Controller.headerExpansion.nextButton()"></paper-fab>
+  </div>
+
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'examinations-view',
+      ready: function(){
+      },
+      properties: {
+        examinations: {
+          notify: true,
+					type: Array,
+        },
+        filterExaminationsObject: {
+          notify: true,
+          type: Object
+        },
+        filterQuestionsObject: {
+          // notify: true,
+          // type: Object
+          value: 'Okayy'
+        }
+      },
+      computeFilter: function(filterExaminationsObject) {
+        switch(filterExaminationsObject.id) {
+            case 'search':
+              var string = filterExaminationsObject.string;
+                  if (!string) {
+                    // set filter to null to disable filtering
+                    return null;
+                  } else {
+                    // return a filter function for the current search string
+                    string = string.toLowerCase();
+                    return function(examination) {
+                      return (
+                          examination.post_content.indexOf(string) != -1
+                          ||
+                          examination.post_title.indexOf(string) != -1
+                      );
+                    };
+                  }
+            break;
+            case 'yearpapermenu':
+                return function(examination) {
+                  if (examination.ID == filterExaminationsObject.eventTarget.id || filterExaminationsObject.eventTarget.id == 'all') {
+                    return true;
+                  } else {
+                    return false;
+                  }
+                };
+            break;
+            default:
+            console.log('default ' +  filterExaminationsObject.id);
+
+            ;
+        }
+
+
+       },
+       searchCheckEnter: function (e) {
+            // check if 'enter' was pressed
+            if (e.keyCode === 13) {
+              this.filterQuestionsObject = {
+                eventTarget: e.target.dataHost,
+                id: e.target.dataHost.attributes[0].value,
+                string: e.target.value,
+              }
+            }
+        },
+        yearselected: function (e) {
+          this.filterExaminationsObject = {
+            eventTarget: e.target,
+            id: e.target.parentElement.parentNode.id,
+          }
+        }
+
+    });
+  </script>
+
+</dom-module>

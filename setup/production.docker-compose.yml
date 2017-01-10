@@ -1,0 +1,61 @@
+version: '2'
+
+# USAGE (from root directory): docker-compose -f ./setup/<docker-compose>.yml up
+services:
+
+  mysql:
+    build:
+      context: ../
+      dockerfile: ./setup/mysql.dockerfile
+    container_name: mysql
+    volumes:
+      # - "./../volume/mysqlDatabase/:/var/lib/mysql"
+      - "./../content/mysqlDatabase/:/docker-entrypoint-initdb.d"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: wordpress
+      # MYSQL_USER: MyUserIn8D
+      # MYSQL_PASSWORD: <g.,qPE:9U>21#B](
+      MYSQL_DATABASE: WebApp_Dentrist_Database
+
+  wordpress:
+    build:
+      context: ../
+      dockerfile: ./setup/wordpress.php5.6.dockerfile
+    depends_on:
+    - mysql
+    container_name: wordpress
+    links:
+      - mysql
+    ports:
+      - "80:80"
+      - "443:443"
+    # All mounted volumes with specific host directory, replace the contents/files of the container folder. Thus the solution is to use entrypoint to populate the volume after it is created.
+    volumes:
+      - "./../volume/app:/app/"
+      - "./../volume/apache/:/etc/apache2/sites-available/"
+      - "./../volume/log:/var/log/apache2/"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      # WORDPRESS_DB_USER: MyUserIn8D
+      # WORDPRESS_DB_PASSWORD: <g.,qPE:9U>21#B](
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: WebApp_Dentrist_Database
+      # WORDPRESS_TABLE_PREFIX: c2xj4zrxos_
+    # entrypoint: updateDefaultEntrypoint.sh
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - mysql
+    container_name: phpmyadmin
+    environment:
+     - PMA_ARBITRARY=1
+    links:
+      - mysql:db
+    restart: always
+    ports:
+     - 81:80
+    volumes:
+     - /sessions

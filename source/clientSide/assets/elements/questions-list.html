@@ -1,0 +1,117 @@
+
+<dom-module id="questions-list">
+	<template>
+	<style>
+	:host {
+		display: block;
+		box-sizing: border-box;
+		margin: 15px 20px 0px 20px;
+		padding-bottom: 20px;
+	}
+	paper-material {
+		background-color: white;
+		border-radius: 3px 3px 0px 0px;
+		color: black;
+		text-decoration: none;
+		/* margin: 0px -33px; */
+
+	}
+	.header {
+		/* border-right: #3b78e7 2px solid; */
+
+	}
+	.examinationlink {
+		color: #9E9E9E;
+	}
+	paper-material:hover .examinationlink {
+		color: black;
+	}
+	.headerlink:hover {
+		text-decoration: none;
+	}
+
+	</style>
+
+		<span>{{filterQuestionsObject}}</span>
+
+		<a class="headerlink" href="{{examination.guid}}" target="_blank">
+		<paper-material elevation="0" id="paperMaterial" class="questionContainer horizontal justified layout " style="display: flex; box-shadow: 0 3px 3px rgba(0,0,0,0.12); padding: 16px 16px 16px 22px; position:relative;">
+			<div class="examinationlink" style=" padding: 0 15px 0 15px; margin-top: auto; margin-bottom: auto;"><iron-icon icon="icons:launch" style="height: 20px; font-weight: normal; padding-right: 10px; width:28px;"></iron-icon></div>
+			<div id="header" class="header" style="text-decoration: none;text-align: right; font-size: 20px; font-weight: bold;" dir="rtl">מבחן {{examination.post_title}} <span style="font-weight: normal; color: #9E9E9E; font-size: 16px; padding-right: 10px; "> —   {{numberOfQuestions}} שאלות. </span></div>
+			<paper-ripple style="color: #4285f4;"></paper-ripple>
+		</paper-material>
+		</a>
+
+		<template id="questionsListRepeat"
+					is="dom-repeat"
+					items="{{questions}}"
+					as="question"
+					index-as="question_no"
+					>
+			<questions-item question="{{question}}"></questions-item>
+		</template>
+		<template
+					is="dom-if"
+					if="{{examination.AdditionalMCQs.length}}"
+					>
+			<paper-material elevation="0" id="paperMaterial" class="questionContainer horizontal justified layout " style="display: flex; box-shadow: 0 3px 3px rgba(0,0,0,0.12); padding: 16px 16px 16px 22px; position:relative; border-top: 1.1px solid #e7e7e7;">
+				<div class="examinationlink" style=" display: hidden; padding: 0 15px 0 15px; margin-top: auto; margin-bottom: auto;"></div>
+				<div id="header" class="header" style="text-decoration: none;text-align: right; font-size: 14px;" dir="rtl"><iron-icon icon="icons:add" style="height: 20px; font-weight: bold; width:28px; color: #9E9E9E; "></iron-icon><span style="font-weight: normal; color: #9E9E9E; font-size: 14pxף "> {{examination.AdditionalMCQs.length}}   שאלות שחזרו במבחנים עדכניים יותר.</span></div>
+			</paper-material>
+		</template>
+
+	</template>
+	<script>
+		Polymer({
+			is: 'questions-list',
+			properties: {
+				questions: Array,
+				examination: Object,
+				numberOfQuestions: {
+					type: Number,
+					computed: 'calculateNumberOfQuestions(questions, examination)'
+				},
+				filterQuestionsObject: {
+					notify: true,
+					type: String
+				}
+			},
+			listeners: {
+				'tap': 'handleClickOff',
+			},
+			calculateNumberOfQuestions: function(questions, examination) {
+					return questions.length + examination.AdditionalMCQs.length;
+			},
+			handleClickOff: function(e, detail) {
+
+			  var target = e.target || e.srcElement;
+
+			  if (!isChildOf(target, e.currentTarget)) {
+					Controller.headerExpansion.collapseHeader();
+			  }
+
+				function isChildOf(child, parent) {
+				  if (child.parentNode === parent) {
+				    return true;
+				  } else if (child.parentNode === null) {
+				    return false;
+				  } else {
+				    return isChildOf(child.parentNode, parent);
+				  }
+				}
+
+
+
+			},
+			clearTodo: function() {},
+			deleteTodo: function() {},
+			addTodo: function(e) {
+				this.push('todos', {
+					label: e.detail.value,
+					isComplate: false
+				});
+			},
+
+		});
+		</script>
+</dom-module>

@@ -1,0 +1,157 @@
+
+<dom-module id="card-concept" noscript>
+    <style>
+		:host {
+		  display: inline-block;
+		  position: relative;
+		  width: 313px;
+		  /* margin-right: 20px; */
+		  margin-bottom: 20px;
+		  list-style-type: none;
+		  background: #f7f7f7;
+		  border: 1px solid #ddd;
+		  border-radius: 3px;
+		}
+		a.title {
+		  position: relative;
+		  display: table;
+		  width: 100%;
+		  height: 120px;
+		  margin-bottom: 15px;
+		  background: #555 center repeat;
+		  background-repeat: no-repeat;
+		  background-size: cover;
+		  box-shadow: inset 0 10px 20px rgba(0,0,0,0.2);
+		  text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+		  color: #FFF;
+		  border-top-right-radius: 3px;
+		  border-top-left-radius: 3px;
+		  text-decoration: none;
+		}
+		a.title:hover {
+		  text-decoration: underline;
+		}
+		a.title h2 {
+		  padding: 0 15px;
+		  margin: 10px 0;
+		  display: table-cell;
+		  width: 100%;
+		  height: 100%;
+		  color: #FFF;
+		  font-size: 19px;
+		  font-weight: bold;
+		  text-align: center;
+		  vertical-align: middle;
+		}
+		p {
+		  padding: 0 15px;
+		  margin: 15px 0;
+		  /*height: 6em;*/
+		  margin-top: 0;
+		  overflow: hidden;
+		  font-size: 15px;
+		  line-height: 1.5em;
+		}
+		div.meta {
+		  padding: 0 15px;
+		  margin-top: 0px;
+		  margin-bottom: 15px;
+		  color: #777;
+		  height: 18px;
+		}
+		div.meta span.right.last {
+		  margin-right: 0px;
+		}
+		span.right {
+		  float: right;
+		  margin-right: 10px;
+		}
+		span.left {
+		  margin-right: 10px;
+		  float: left;
+  		}
+		core-icon.meta {
+		  height: 16px;
+		  width: 16px;
+		  display: inline-block;
+		  vertical-align: sub;
+		}
+		span.number {
+		  height: 19px;
+		  display: inline-block;
+		}
+		core-tooltip::shadow #tooltip {
+		  margin-bottom: 5px;
+		}
+
+	</style>
+	<template>
+		<div >
+        	<a class="title" href="{{url}}" style$="{{computebackgroundimageurl}}">
+            	<h2>{{concepttitle}}</h2>
+            </a>
+            <p><span>{{content}}</span></p>
+
+            <div class="meta">
+
+            <span class="left">
+                <core-tooltip label="Published Posts" position="top" role="tooltip" tabindex="0">
+                    <core-icon icon="class" class="meta"></core-icon>
+                    <span class="number">25</span>
+                </core-tooltip>
+                </span>
+            <span class="right last">
+                <core-tooltip label="Likes / Favs" position="top" role="tooltip" tabindex="0">
+                    <core-icon icon="favorite" class="meta"></core-icon>
+                    <span class="number">100</span>
+                </core-tooltip>
+            </span>
+            <span class="right">
+                <core-tooltip label="Share times" position="top" role="tooltip" tabindex="0">
+                    <core-icon icon="social:share" class="meta"></core-icon>
+                    <span class="number">45</span>
+                </core-tooltip>
+            </span>
+
+            </div>
+            <content></content>
+        </div>
+    </template>
+</dom-module>
+<script>
+Polymer({
+    is: "card-concept",
+
+    // add properties and methods on the element's prototype
+    properties: {
+      // declare properties for the element's public API
+      concepttitle: {
+        type: String,
+        value: ""
+      },
+      backgroundimageurl: {
+        type: String,
+        value: ""
+      },
+      url: {
+        type: String,
+        value: ""
+      },
+      content: {
+        type: String,
+        value: ""
+      },
+      computebackgroundimageurl: {
+        type: String,
+        // when `first` or `last` changes `computeFullName` is called once
+        // (asynchronously) and the value it returns is stored as `fullName`
+        computed: 'computebu(backgroundimageurl)'
+      }
+    },
+
+	computebu: function(backgroundimageurl) {
+	   return 'background-image: url(' + backgroundimageurl + ');';
+	}
+
+  });
+</script>

@@ -1,0 +1,242 @@
+<dom-module id="examinations-data">
+
+  <template>
+		<iron-ajax auto
+				url="{{url}}"
+				headers='{"Content-Type": "application/json;charset=utf-8"}'
+				handle-as="json"
+				last-response="{{examinationsAjaxResponse}}"
+        on-response="responseHandler"
+        on-request="requestHandler"
+        ></iron-ajax>
+
+    <style>
+    </style>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'examinations-data',
+      properties: {
+        examinations: {
+          notify: true,
+					type: Array,
+					computed: 'computeAjaxResponse(examinationsAjaxResponse)'
+        },
+				examinationsAjaxResponse: {
+					notify: true,
+					type: Object,
+				},
+        examinationid: {
+          value: null,
+          notify: true,
+          type: String,
+        },
+        examinationnumber: {
+          value: null,
+          notify: true,
+          type: String,
+        },
+        url: {
+          notify: true,
+          type: String,
+          computed: 'computeURL(examinationid, examinationnumber)'
+        }
+      },
+      computeURL: function(examinationid, examinationnumber) {
+        var url = '/wp-json/szn/mcq/?';
+
+        if(examinationid) {
+          url = url + 'examinationid=' + examinationid + '&';
+        }
+        if(examinationnumber) {
+          url = url + 'examinationnumber=' + examinationnumber + '&';
+        }
+
+        return url;
+      },
+      responseHandler: function() {
+        document.getElementById("mcqspinner").style.display = "none";
+        document.getElementById("nexprevFabButton").style.display = "block";
+        document.getElementById("paperMaterial").style.display = "flex";
+
+        if (screen.width > 500) {
+          document.getElementById("nexprevFabButton").style.top = window.innerHeight + window.scrollY - 208 + 'px';
+        }
+      },
+      requestHandler: function() {
+      },
+      computeAjaxResponse: function(examinationsAjaxResponse) {
+
+        return examinationsAjaxResponse;
+      },
+			computeAjaxObjectToArray: function(examinationsAjaxResponse) {
+
+        // returns an array (changes object of objects to Array of objects) to allow usage in iron-ajax.
+				var examinationsArray = $.map(examinationsAjaxResponse, function(value, index) {
+				    return [value];
+				});
+
+				for (var i in examinationsArray) {
+					examinationsArray[i].MCQs = $.map(examinationsArray[i].MCQs, function(value, index) {
+							return [value];
+					});
+				}
+
+				return examinationsArray;
+			},
+    });
+  </script>
+
+</dom-module>
+
+<script>
+
+
+// Prevent right click on entire document.
+// document.addEventListener("contextmenu", function(e){
+//     e.preventDefault();
+// }, false);
+//
+// // This script blocks the right-click menu from appearing when any image in the page is right-clicked. The menu will still appear for other content in the page; just not for images.
+// document.oncontextmenu = function(e) {
+//     e = e || window.event;
+//     if (/^img$/i.test((e.target || e.srcElement).nodeName)) return false;
+// };
+
+
+  // document.addEventListener('DOMContentLoaded', function () {
+  //     document.body.addEventListener('click', Controller.consoleit, true);
+  // });
+
+
+var Controller = { };
+
+// DOM elements functions
+Controller.dom = {
+  hasClass: function (element, cls) {
+      return (' ' + element.parentNode.className + ' ').indexOf(' ' + cls + ' ') > -1;
+  },
+  //Finds y value of given object
+  findPos: function (obj) {
+      var curtop = 0;
+      if (obj.offsetParent) {
+          do {
+              curtop += obj.offsetTop;
+          } while (obj = obj.offsetParent);
+      return [curtop];
+      }
+  },
+  getAbsoluteHeight: function (el) {
+    // Get the DOM Node if you pass in a string
+    el = (typeof el === 'string') ? document.querySelector(el) : el;
+
+    var styles = window.getComputedStyle(el);
+    var margin = parseFloat(styles['marginTop']) +
+                 parseFloat(styles['marginBottom']);
+
+    return Math.ceil(el.offsetHeight + margin);
+  }
+};
+
+
+Controller.headerExpansion = {
+  currentlyExpanded: false,
+  lastSelected: null,
+  changeLastSelected: function(headerElement, parentElement, contentElement, hostElement) {
+      if(this.lastSelected !=null) {
+          this.collapseHeader();
+          this.lastSelected.headerElement.className =  this.lastSelected.headerElement.className.replace(/\blastSelected\b/,'');
+      }
+      this.lastSelected = {
+        headerElement: headerElement,
+        parentElement: parentElement,
+        contentElement: contentElement,
+        hostElement: hostElement
+      };
+      this.lastSelected.headerElement.className += " lastSelected";
+  },
+  toggleHeader: function() {
+    if(this.currentlyExpanded == true) {
+      this.collapseHeader();
+    } else if(this.currentlyExpanded == false && this.lastSelected != null) {
+      this.expandHeader();
+    }
+  },
+  expandHeader: function() {
+    if(this.currentlyExpanded == false){
+      this.lastSelected.contentElement.className += " contentExpanded";
+      this.lastSelected.headerElement.className += " headerExpanded";
+      this.lastSelected.parentElement.className += " activityExpanded";
+      this.lastSelected.parentElement.elevation = 1;
+      this.currentlyExpanded = true;
+    }
+  },
+  collapseHeader: function() {
+      if(this.currentlyExpanded == true){
+          this.lastSelected.parentElement.elevation = 0;
+          this.lastSelected.parentElement.className =  this.lastSelected.parentElement.className.replace(/\bactivityExpanded\b/,'');
+          this.lastSelected.headerElement.className =  this.lastSelected.headerElement.className.replace(/\bheaderExpanded\b/,'');
+          this.lastSelected.contentElement.className =  this.lastSelected.contentElement.className.replace(/\bcontentExpanded\b/,'');
+          this.currentlyExpanded = false;
+          // var elements = document.getElementsByClassName("activityExpanded");
+          // for(var i=0; i<elements.length; i++) {
+          //   elements[i].elevation = 0;
+          // }
+
+          // var elements = document.getElementsByClassName("activityExpanded");
+          // for(var i=0; i<elements.length; i++) {
+          //   elements[i].className =  elements[i].className.replace(/\bactivityExpanded\b/,'');
+          // }
+
+          // var elements = document.getElementsByClassName("headerExpanded");
+          // for(var i=0; i<elements.length; i++) {
+          //   elements[i].className =  elements[i].className.replace(/\bheaderExpanded\b/,'');
+          // }
+
+          // var elements = document.getElementsByClassName("content");
+          // for(var i=0; i<elements.length; i++) {
+          //   elements[i].className =  elements[i].className.replace(/\bcontentExpanded\b/,'');
+          // }
+      }
+  },
+  nextButton: function () {
+    if(Controller.headerExpansion.lastSelected == null) {
+      document.getElementsByTagName("QUESTIONS-ITEM")[0].activate();
+    }
+    Controller.headerExpansion.lastSelected.hostElement.nextItem();
+  },
+  previousButton: function () {
+    if(Controller.headerExpansion.lastSelected == null) {
+      document.getElementsByTagName("QUESTIONS-ITEM")[0].activate();
+    }
+    Controller.headerExpansion.lastSelected.hostElement.previousItem();
+  },
+
+};
+
+
+/* @Note: not sure e.pageX will work in IE8 */
+(function(window){
+
+  //position:fixed; bottom:28px; left:16px;
+  // var demoItem2 = document.getElementById("nexprevFabButton");
+  /* Add an event to the window.onscroll event */
+  document.addEventListener('WebComponentsReady', function () {
+
+      if (screen.width > 500 && document.getElementsByTagName("examinations-view") && document.getElementById("nexprevFabButton") != null) {
+          window.addEventListener("scroll", function(e) {
+              document.getElementById("nexprevFabButton").style.position = 'absolute';
+              document.getElementById("nexprevFabButton").style.top = window.innerHeight + window.scrollY - 208 + 'px';
+          });
+      } else {
+        // document.getElementById("nexprevFabButton").style.position = 'fixed';
+      }
+
+   });
+
+})(window);
+
+
+</script>

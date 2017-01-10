@@ -1,0 +1,350 @@
+<dom-module id="questions-item">
+	<template>
+	<style>
+	:host {
+		display: block;
+		box-sizing: border-box;
+		min-height: 10px;
+	}
+	:host:focus .header {
+		background-color:  #fafafa;
+	}
+	.questionContainer {
+		position: relative;
+		padding: 0;
+	}
+	paper-material {
+		background-color: white;
+		margin: 0;
+		-webkit-transition: margin .2s cubic-bezier(0.4,0.0,0.2,1);
+    transition: margin .2s cubic-bezier(0.4,0.0,0.2,1);
+    will-change: margin;
+	}
+	.activityExpanded {
+		margin: 20px -12px;
+		-webkit-transition: margin .2s cubic-bezier(0.4,0.0,0.2,1);
+    transition: margin .2s cubic-bezier(0.4,0.0,0.2,1);
+    will-change: margin;
+		border-radius: 5px;
+		overflow: hidden;
+	}
+	.header {
+		padding: 4px 16px 4px 22px;
+		background: #fff;
+		border-top: 1.1px solid #e7e7e7;
+		-webkit-box-shadow: 0 3px 3px rgba(0,0,0,0.12);
+		box-shadow: 0 3px 3px rgba(0,0,0,0.12);
+	}
+	.header:hover {
+		background-color:  #fafafa;
+	}
+	#header.headerExpanded {
+		font-weight: bold;
+		display: -ms-flexbox;
+    display: -webkit-flex;
+    cursor: pointer;
+    background: #3b78e7;
+    color: #fff;
+    padding: 12px 16px;
+	}
+	.headerExpanded:hover {
+		background: #3b78e7;
+	}
+	.lastSelected {
+		border-right: #3b78e7 2px solid;
+	}
+	.content {
+		display: none;
+		padding: 0;
+	}
+	.contentExpanded {
+		display: block;
+	}
+	paper-input {
+		margin-top: -4px;
+		--paper-input-container-input: {
+			font-family: 'Roboto Slab';
+			font-size: 20px;
+			text-overflow: ellipsis;
+		};
+		--paper-input-container-underline: {
+			background: transparent;
+		};
+	}
+	.btn-cancel {
+		opacity: 0;
+		/* Same as paper-material shadow */
+		/*https://github.com/PolymerElements/paper-styles/blob/master/shadow.html#L17*/
+		transition: opacity 0.28s;
+		/* Odd hack to fix cropped paper-ripple focus state */
+		/* https://github.com/PolymerElements/paper-icon-button/issues/33 */
+		font-size: 15px;
+	}
+	:host:hover .btn-cancel,
+	:host([active]) .btn-cancel {
+		opacity: 1;
+	}
+	.content:not(:last-child) {
+		border-bottom: 1.1px solid #e7e7e7;
+
+	}
+	answers-item:first-child{
+		border-top: 1.1px solid #e7e7e7;
+	}
+	answers-item:last-child{
+			border: 0;
+	}
+
+	#linktoquestion a:hover {
+		color: black;
+	}
+	#linktoquestion a {
+		color: #9E9E9E;
+	}
+
+	</style>
+
+
+		<paper-material elevation="0" id="paperMaterial" class="questionContainer"  style="display: block;">
+			<div id="header" class="header horizontal justified layout" style="text-align: right;  cursor: pointer;" dir="rtl" on-click="headerClick">
+				<div class="" style="font-size: 15px;">{{questionTitle}}</div>
+
+				<div class="" style="padding-right: 15px; font-weight: normal; font-size:12px; text-align: left; margin: auto 0;    line-height: 16px; white-space: nowrap; display: inline-flex;">
+						<template is="dom-if" if="{{question.acf.image_gallery}}"><span style=" line-height: 16px; margin-left: 7px; padding-left: 3px; border-left: 1px solid #e7e7e7; float: right;display: inline-block;"><iron-icon icon="image:camera-alt" style="height: 20px; font-weight: normal; float: right; "></iron-icon></span></template>
+						<span style="display: inline-block;  line-height: 16px; line-height: 20px; margin: auto; white-space: normal;">{{examinationyears}}</span>
+				</div>
+			</div>
+			<div id="content" class="content" style="text-align: right; width: 100%;" dir="rtl">
+				<template is="dom-if" if="{{question.acf.image_gallery}}">
+					<div style="margin: auto 0; text-align: center; margin-bottom: 5px;"><a href="#" target="_blank" ><img class="protectMe" src="{{question.acf.image_gallery.0.sizes.large}}" alt="" /></a></div>
+				</template>
+				<div id="" class="horizontal justified layout" style=" font-size:12px; text-align: right; width: 100%; padding: 16px 16px 16px 22px;" dir="rtl">
+					<div class="" style="display: none;">מידע על השאלה.</div>
+					<div class="" style="padding-right: 15px;">
+						<template is="dom-if" if="{{isverycorrect(question)}}">
+							תשובה בטוח נכונה <iron-icon icon="icons:done-all" style="color: green; height: 20px; font-weight: normal;"></iron-icon>
+						</template>
+						<template is="dom-if" if="{{iscorrect(question)}}">
+							תשובה נכונה<iron-icon icon="icons:check" style="color: green; height: 20px; font-weight: normal;"></iron-icon>
+						</template>
+						<template is="dom-if" if="{{isexclamation(question)}}">
+							תשובה לא אמינה <iron-icon icon="icons:warning" style=" color: orange; height: 20px; font-weight: normal;"></iron-icon>
+						</template>
+						<template is="dom-if" if="{{iswrong(question)}}">
+							תשובה לא אמינה <iron-icon icon="icons:clear" style="color: red; height: 20px; font-weight: normal;"></iron-icon>
+						</template>
+						<template is="dom-if" if="{{question.acf.questionnotice}}">
+							<span> - {{question.acf.questionnotice}}</span>
+						</template>
+					</div>
+				</div>
+				<div id="" class="" style=" font-size:12px;text-align: right; width: 100%; display: block;" dir="rtl">
+					<template is="dom-repeat"
+						items="{{question.acf.mcqanswers}}"
+						as="answer"
+						>
+						<answers-item answer="{{answer}}" index="{{index}}"></answers-item>
+					</template>
+				</div>
+				<div id="linktoquestion" class="horizontal justified layout" style=" font-size:12px; text-align: right; width: 100%;  position: relative;" dir="rtl">
+					<a href="{{question.guid}}" class="flex-5" style="padding: 16px 16px 16px 10px; " target="_blank">
+						<div style="display: flex;">לעמוד השאלה.
+								<div class="" style="padding-right: 15px; "><iron-icon icon="icons:launch" style="height: 20px; font-weight: normal;"></iron-icon></div>
+						</div>
+						<paper-ripple style="color: #4285f4;"></paper-ripple>
+					</a>
+					<a href="{{question.edit}}" class="flex" style="padding: 16px 10px 16px 22px; " target="_blank">
+						<div style="padding-right: 15px; text-align: left; ">
+								<iron-icon icon="editor:mode-edit" style="height: 20px; font-weight: normal;"></iron-icon>
+						</div>
+						<paper-ripple style="color: #4285f4;"></paper-ripple>
+					</a>
+				</div>
+
+			</div>
+		</paper-material>
+
+	</template>
+	<script>
+		Polymer({
+			is: 'questions-item',
+			hostAttributes: {
+				tabindex: 0
+			},
+			behaviors: [
+				Polymer.IronA11yKeysBehavior
+			],
+			keyBindings: {
+				'space enter': 'activate',
+				'down' : 'nextItem',
+				'up' : 'previousItem'
+			},
+			activate: function(e) {
+				if((Controller.headerExpansion.lastSelected == null) || (Controller.headerExpansion.lastSelected && Controller.headerExpansion.lastSelected.headerElement != this.$.header)) {
+					var headerElement = this.$.header;
+					var parentElement = this.$.paperMaterial;
+					var contentElement = this.$.content;
+					var hostElement = this;
+					Controller.headerExpansion.changeLastSelected(headerElement, parentElement, contentElement, hostElement);
+				}
+				Controller.headerExpansion.toggleHeader();
+			},
+			nextItem: function(e) {
+
+				// var currentItemDistanceFromTopOfViewport = +Controller.headerExpansion.lastSelected.parentElement.offsetTop  - +window.scrollY;
+
+				// var currentItemDistanceFromTopOfViewportF = +Controller.dom.findPos(Controller.headerExpansion.lastSelected.hostElement) - +window.scrollY;
+				// var positionOfCurrentElementFromTop = +Controller.dom.getAbsoluteHeight(Controller.headerExpansion.lastSelected.hostElement);
+				var currentItemComputedTopMargin = parseInt( window.getComputedStyle(Controller.headerExpansion.lastSelected.parentElement,null).getPropertyValue("margin-bottom") );
+				currentItemComputedTopMargin -= 0.2; // offset for some unknown reason
+				var currentItemDistanceFromTopOfViewport = +Controller.headerExpansion.lastSelected.hostElement.getBoundingClientRect().top + +currentItemComputedTopMargin;
+
+				if(e) {
+					e.preventDefault();
+					e.detail.keyboardEvent.preventDefault();
+				}
+
+				var currentItem = this;
+				var nextItem = this.nextSibling.nextElementSibling;
+				if(nextItem.tagName == 'QUESTIONS-ITEM') {
+					nextItem.activate();
+					nextItem.focus();
+				} else if(this.domHost.nextSibling.nextElementSibling.tagName == 'QUESTIONS-LIST' && this.domHost.nextSibling.nextElementSibling.getElementsByTagName('QUESTIONS-ITEM')[0]) {
+					var currentList = this.domHost;
+					var nextList = currentList.nextSibling.nextElementSibling;
+					var nextListItem = nextList.getElementsByTagName('QUESTIONS-ITEM')[0];
+					nextListItem.activate();
+					nextListItem.focus();
+
+					// var pos = nextListItem.scrollTop;
+					// window.scrollTo(0,pos);
+				}
+
+				if(this.domHost.nextSibling.nextElementSibling.tagName == 'QUESTIONS-LIST' || nextItem.tagName == 'QUESTIONS-ITEM') {
+					// var positionToMiddleOfElement = +Controller.dom.findPos(Controller.headerExpansion.lastSelected.hostElement) + +Controller.dom.getAbsoluteHeight(Controller.headerExpansion.lastSelected.hostElement) /2;
+					var positionOfElementFromTop = +Controller.dom.findPos(Controller.headerExpansion.lastSelected.hostElement);
+
+					// window.scroll(0,+(positionToMiddleOfElement) - +(window.innerHeight * 1/2) );					// var pos1 = window.innerHeight;
+					// window.scrollBy(0, +1 * ( +positionOfElementFromTop - +positionOfCurrentElementFromTop ) );
+					window.scroll( 0, +positionOfElementFromTop - +currentItemDistanceFromTopOfViewport);
+				}
+
+			},
+			previousItem: function(e) {
+
+				// var currentItemDistanceFromTopOfViewportF = +Controller.dom.findPos(Controller.headerExpansion.lastSelected.hostElement) - +window.scrollY;
+				// var positionOfCurrentElementFromTop = +Controller.dom.getAbsoluteHeight(Controller.headerExpansion.lastSelected.hostElement);
+				var currentItemComputedTopMargin = parseInt( window.getComputedStyle(Controller.headerExpansion.lastSelected.parentElement,null).getPropertyValue("margin-top") );
+				currentItemComputedTopMargin += 0.8; // offset for some unknown reason
+				var currentItemDistanceFromTopOfViewport = +Controller.headerExpansion.lastSelected.hostElement.getBoundingClientRect().top - +currentItemComputedTopMargin;
+
+				if(e) {
+					e.preventDefault();
+					e.detail.keyboardEvent.preventDefault();
+				}
+
+				var currentItem = this;
+				var previousItem = this.previousSibling.previousElementSibling;
+				if(previousItem.tagName == 'QUESTIONS-ITEM') {
+					previousItem.activate();
+					previousItem.focus();
+				} else if(this.domHost.previousSibling.previousElementSibling.tagName == 'QUESTIONS-LIST') {
+					var currentList = this.domHost;
+					var previousList = currentList.previousSibling.previousElementSibling;
+					var previousListItem = previousList.getElementsByTagName('QUESTIONS-ITEM')[previousList.getElementsByTagName('QUESTIONS-ITEM').length - 1];
+					previousListItem.activate();
+					previousListItem.focus();
+				}
+
+				if(this.domHost.previousSibling.previousElementSibling.tagName == 'QUESTIONS-LIST' || previousItem.tagName == 'QUESTIONS-ITEM') {
+					// var positionToMiddleOfElement = +Controller.dom.findPos(Controller.headerExpansion.lastSelected.hostElement) + +Controller.dom.getAbsoluteHeight(Controller.headerExpansion.lastSelected.hostElement) /2;
+					var positionOfElementFromTop = +Controller.dom.findPos(Controller.headerExpansion.lastSelected.hostElement);
+
+					// window.scroll(0,+(positionToMiddleOfElement) - +(window.innerHeight * 1/2) );					// var pos1 = window.innerHeight;
+					// window.scrollBy(0, +1 * ( +positionOfElementFromTop - +positionOfCurrentElementFromTop ) );
+					window.scroll( 0, +positionOfElementFromTop - +currentItemDistanceFromTopOfViewport);
+				}
+			},
+			properties: {
+				question: Object,
+				questionTitle: {
+					computed: 'decodeHtml(question)'
+				},
+				examinationyears: {
+					notify: true,
+					computed: 'computeCombineExaminationYears(question)'
+				}
+			},
+			isverycorrect: function (question) {
+				if(question.acf.questionstatus == 'VV') {
+					return true;
+				} else {
+					return false;
+				}
+			},
+			iscorrect: function (question) {
+				if(question.acf.questionstatus == 'V') {
+					return true;
+				} else {
+					return false;
+				}
+			},
+			isexclamation: function (question) {
+				if(question.acf.questionstatus == 'Exclamation') {
+					return true;
+				} else {
+					return false;
+				}
+			},
+			iswrong: function (question) {
+				if(question.acf.questionstatus == 'X') {
+					return true;
+				} else {
+					return false;
+				}
+			},
+			computeCombineExaminationYears: function(question) {
+				var text ="";
+				var array = question.acf.examination;
+				for (var i in array) {
+				        text += array[i].post_title + ' ';
+				}
+				return text;
+
+			},
+			headerClick: function(e, detail) {
+
+				if((Controller.headerExpansion.lastSelected == null) || (Controller.headerExpansion.lastSelected && Controller.headerExpansion.lastSelected.headerElement != e.currentTarget)) {
+					var headerElement = e.currentTarget;
+					var parentElement = Polymer.dom(e.currentTarget).parentNode;
+					var contentElement = this.$.content;
+					var hostElement = this;
+					Controller.headerExpansion.changeLastSelected(headerElement, parentElement, contentElement, hostElement);
+				}
+				Controller.headerExpansion.toggleHeader();
+
+			},
+			changeQuestionLabel: function() {
+				this.set('question.post_title', 'changed.');
+			},
+			clearTodo: function() {},
+			deleteTodo: function() {},
+			decodeHtml: function(question) {
+				// decode & encode html entity using javascript.
+				//https://gist.github.com/CatTail/4174511
+				var decodeHtmlEntity = function(str) {
+				  return str.replace(/&#(\d+);/g, function(match, dec) {
+				    return String.fromCharCode(dec);
+				  });
+				};
+
+			  return decodeHtmlEntity(question.post_title);;
+			},
+			regularTap: function(e) {
+				alert("Thank you for tapping");
+			},
+
+
+		});
+		</script>
+</dom-module>

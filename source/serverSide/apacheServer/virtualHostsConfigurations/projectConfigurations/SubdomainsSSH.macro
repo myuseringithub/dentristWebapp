@@ -1,0 +1,6 @@
+<Macro SubdomainsSSH>
+    SSLEngine on
+    SSLCertificateFile ${SSLCertificatesPath}/all_subdomains.crt
+    SSLCertificateKeyFile ${SSLCertificatesPath}/all_subdomains.key
+    Include ${ApacheConfigPath}/sharedConfigurations/shared-settings.conf
+</Macro>
