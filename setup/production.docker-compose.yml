@@ -35,7 +35,7 @@ services:
       - "./../volume/app:/app/"
       - "./../volume/apache/:/etc/apache2/sites-available/"
       - "./../volume/log:/var/log/apache2/"
-    restart: always
+    # restart: always
     environment:
       WORDPRESS_DB_HOST: mysql:3306
       # WORDPRESS_DB_USER: MyUserIn8D
