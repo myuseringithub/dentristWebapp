@@ -32,10 +32,10 @@ services:
         volumes:
           - ../distribution:/app/
           - ../setup/shellScript:/tmp/shellScript/
-          - ../source/test/:/tmp/test/
+          - ../setup/test/:/tmp/test/
         working_dir: /tmp/test/
         # entrypoint allows cd command to work, in command: bash it doesn't.
-        entrypoint: /tmp/shellScript/testDistributionCode.sh
+        entrypoint: /tmp/shellScript/localUnitTest.duringRuntime.sh
         # use /bin/sh where bash is not installed (i.e. alpine-node image). Installed bash to the default image.
         # command: bash -c ""
     
@@ -43,6 +43,10 @@ services:
     # USAGE: docker-compose -f ./setup/deployment.docker-compose.yml -f ./setup/development.docker-compose.yml up wordpress localStagingTest
     localStagingTest:
         extends: deploymentEnvironment
+        volumes:
+          - ../setup/shellScript:/tmp/shellScript/
+          - ../setup/test/:/tmp/test/
+        working_dir: /tmp/test/
         # Other option is to use links instead of connecting to localhost.
         # depends_on:
         #     - wordpress
@@ -53,7 +57,8 @@ services:
         environment:
             - HOST_IP=localhost:80
         network_mode: host
-        command: bash -c "printenv"
+        entrypoint: /tmp/shellScript/localStagingTest.duringRuntime.sh
+        # command: bash -c "printenv"
 
 
 
