@@ -8,6 +8,11 @@ USAGE:
     
 "volume" folder will be created.
 
+Updated: 
+    • Build source code to distribution code:
+      docker-compose -f ./setup/deployment.docker-compose.yml up buildSourceCode
+    • Run containers:
+      docker-compose -f ./setup/development.docker-compose.yml up 
 ___________________________________________
 
 
