@@ -8,11 +8,17 @@ services:
       # relative to the position of current file.
       file: ./wordpress.docker-compose.yml
       service: wordpress
-    restart: always
+    build:
+      context: ../
+      dockerfile: ./setup/wordpress.php5.6.dockerfile
     depends_on:
-      - mysql 
+      - mysql
     links:
       - mysql
+    volumes:
+      - ../distribution:/tmp/distribution/
+      - ../content:/tmp/content/
+      - ../setup/shellScript:/tmp/shellScript/
 
   mysql:
     extends:
@@ -27,3 +33,4 @@ services:
       - mysql
     links:
       - mysql:db
+

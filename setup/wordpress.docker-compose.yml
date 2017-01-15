@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+
+  wordpress:
+      # Name of the resulted image out of the build.
+    image: myuserindocker/webapp-dentrist
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+    container_name: wordpress
+    ports:
+      - "80:80"
+      - "443:443"
+    # All mounted volumes with specific host directory, replace the contents/files of the container folder. Thus the solution is to use entrypoint to populate the volume after it is created.
+    volumes:
+      - "./../volume/app:/app/"
+      - "./../volume/apache/:/etc/apache2/sites-available/"
+      - "./../volume/log:/var/log/apache2/"
+    environment:
+      DEVELOPMENT: 'true'
+      # WORDPRESS_DB_USER: MyUserIn8D
+      # WORDPRESS_DB_PASSWORD: <g.,qPE:9U>21#B](
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: WebApp_Dentrist_Database
+      # WORDPRESS_TABLE_PREFIX: c2xj4zrxos_
+    # entrypoint: updateDefaultEntrypoint.sh

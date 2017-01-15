@@ -47,8 +47,7 @@ RUN set -ex; \
 	chown -R www-data:www-data /usr/src/wordpress
 
 # update and install essentials:
-RUN apt-get -y update && apt-get -y upgrade && apt-get -y install vim;
-RUN apt-get -y install nano
+RUN apt-get -y update && apt-get -y upgrade && apt-get -y install vim; apt-get -y install nano; pecl install zip;
 
 # Volumes:
 VOLUME /app/
@@ -58,16 +57,17 @@ VOLUME /etc/apache2/sites-available/
 RUN rm -r /etc/apache2/sites-enabled/*;
 
 # Copy content to container:
-COPY ./content/ /tmp/content/
-COPY ./source/ /tmp/source/
+# COPY ./content/ /tmp/content/
+# COPY ./distribution/ /tmp/distribution/
 
-COPY ./setup/shellScript/wordpressContainerEntrypoint.sh /usr/local/bin/
-COPY ./setup/shellScript/addContentAndConfigs.sh /usr/local/bin/
 # Apparently when copied from windows, execution permissions should be granted.
-RUN chmod +x /usr/local/bin/wordpressContainerEntrypoint.sh
-RUN chmod +x /usr/local/bin/addContentAndConfigs.sh
+COPY ./setup/shellScript/wordpressContainerEntrypoint.duringRuntime.sh /usr/local/bin/
+COPY ./setup/shellScript/addContentAndConfigs.duringRuntime.sh /usr/local/bin/ 
+RUN chmod +x /usr/local/bin/wordpressContainerEntrypoint.duringRuntime.sh
+RUN chmod +x /usr/local/bin/addContentAndConfigs.duringRuntime.sh
+# RUN find /usr/local/bin/ -type f -exec chmod +x {} \;
 
 # RUN echo 'ServerName localhost' >> /etc/apache2/conf-available/000-default.conf
 
-ENTRYPOINT ["wordpressContainerEntrypoint.sh"]
+ENTRYPOINT ["wordpressContainerEntrypoint.duringRuntime.sh"]
 CMD ["apache2-foreground"]

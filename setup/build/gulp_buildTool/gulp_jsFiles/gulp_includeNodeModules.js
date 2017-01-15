@@ -213,12 +213,21 @@ tools['vulcanizeTask'] = vulcanizeTask = function(sources, destination) {
 tools['rsyncTask'] = rsyncTask = function(source, destination) {
   tools.gulp.src(source)
     .pipe(tools.plugins.rsync({
+      // paths outside of root cannot be specified.
       root: source,
       destination: destination,
       incremental: true,
       compress: true,
       recursive: true,
-      clean: true,
+      // clean: true, // --delete - deletes files on target. Files which are not present on source.
+      // dryrun: true, // for tests use dryrun which will not change files only mimic the run.
+      // progress: true,
+      // skip files which are newer on target/reciever path.
+      update: true
+      // args this way doesn't work ! should use the equevalent options in API
+      // args: ['--verbose', '--compress', '--update', '--dry-run']
+      // DOESN'T WORK FOR MULTIPLE PATHS - error "outside of root" When relatice is off rsync can recieve multiple paths through gulp.src.
+      // relative: false
     }));
 };
 

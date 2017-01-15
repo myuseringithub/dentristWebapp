@@ -1,10 +1,13 @@
-
 // Strict enforces specific conditions and imported scripts may have problems.
 'use strict';
 
-var GULP_PATH = '/var/www/gulp_buildTool/';
-var SOURCE = '../root/';
-var DESTINATION = '/var/www/projects/subdomains.webapp.run/deployment/wordpresswebapp/root/';
+// This file is used to define Gulp tasks with source path and destination path. While gulp_includeNodeModules.js is used to save the functions for the build.
+
+// IMPORTANT: should migrate to gulp 4 and use gulp.series http://stackoverflow.com/questions/22824546/how-to-run-gulp-tasks-sequentially-one-after-the-other#comment70421010_31329150
+
+var GULP_PATH = '/tmp/build/gulp_buildTool/';
+var SOURCE = '/tmp/source';
+var DESTINATION = '/app';
 var tools = require(GULP_PATH + 'gulp_jsFiles/gulp_includeNodeModules.js');
 
 var source = function(subpath) {
@@ -16,9 +19,6 @@ var destination = function(subpath) {
 
 // gulp-uglify, gulp-cssnano, gulp-autoprefixer, gulp-concat, gulp-plumber.
 // var browserSync = require('browser-sync').create();
-
-
-
 // browserSync
 // // Static server
 // tools.gulp.task('browser-sync', function() {
@@ -38,39 +38,69 @@ var destination = function(subpath) {
 // });
 
 
-
-tools.gulp.task('DevToProd_css', function() {
-	return tools.cssTask(
-		source(['app/styles/**/*.css']),
-		destination('app/styles')
+// ⭐ Copy all files to the destination fodler. Then build file types.
+tools.gulp.task('copyAllFiles', function() {
+	return tools.rsyncTask(
+		source(),
+		destination()
 	);
 });
 
-tools.gulp.task('DevToProd_cssthemes', function() {
+// ⭐ Build CSS
+tools.gulp.task('css_assets', function() {
 	return tools.cssTask(
-		source(['routing/**/*.css']),
-		destination('routing')
+		source(['clientSide/assets/styles/**/*.css']),
+		destination('clientSide/assets/styles')
+	);
+});
+tools.gulp.task('css_routing', function() {
+	return tools.cssTask(
+		source(['clientSide/routing/**/*.css']),
+		destination('clientSide/routing')
 	);
 });
 
-tools.gulp.task('DevToProd_uglifyjs', function() {
+// ⭐ Build JS Files - Causes ERRORS
+tools.gulp.task('uglifyjs', function() {
 	return tools.javascriptUglifyTask(
-		source(['app/javascripts/**/*.js']),
-		destination('app/javascripts')
+		// chaged because it causes errors
+		source('clientSide/assets/javascripts/admin-script.js'),
+		destination('clientSide/assets/javascripts')
 	);
 });
 
-tools.gulp.task('DevToProd_htmlminify', function() {
+// ⭐ Build HTML Files
+tools.gulp.task('htmlminify', function() {
 	return tools.htmlminifyTask(
 		[
-			source('app/**/*.html'),
-			'!'+ source('app/elements/**/*.html'),
-			'!'+ source('app/elements/bower_components/**/*.html'),
-			'!'+ source('app/javascripts/addons_library/Woothemes-FlexSlider2/dynamic-carousel-min-max.html') // Throughs errors.
+			source('clientSide/assets/**/*.html'),
+			'!'+ source('clientSide/assets/elements/**/*.html'),
+			'!'+ source('clientSide/assets/elements/bower_components/**/*.html'),
+			'!'+ source('clientSide/assets/javascripts/addons_library/Woothemes-FlexSlider2/dynamic-carousel-min-max.html') // Throughs errors.
 		],
-		destination('app')
+		destination('clientSide/assets')
 	);
 });
+tools.gulp.task('htmlminifyElements', function() {
+	return tools.htmlminifyElementsTask(
+		[
+			source('clientSide/assets/elements/**/*.html'),
+			'!'+ source('clientSide/assets/elements/bower_components/**/*.html')
+		],
+		destination('clientSide/assets/elements')
+	);
+});
+
+// ⭐ Build rest of code.
+tools.gulp.task('buildSouceCode', [
+	'css_assets',
+	'css_routing',
+	// Produces ERRORS !
+	'htmlminifyElements',
+	// 'htmlminify',
+	'uglifyjs'
+]);
+
 
 tools.gulp.task('DevToProd_phpminify', function() {
 	// return tools.optimizePHPTask2(
@@ -81,32 +111,6 @@ tools.gulp.task('DevToProd_phpminify', function() {
 	// 	],
 	// 	destination('content/mu-plugins/')
 	// );
-});
-
-
-tools.gulp.task('DevToProd_htmlminifyElements', function() {
-	return tools.htmlminifyElementsTask(
-		[
-			source('app/elements/**/*.html'),
-			'!'+ source('app/elements/bower_components/**/*.html')
-		],
-		destination('app/elements')
-	);
-});
-
-// OLD NOT WORKING
-// tools.gulp.task('vulcanize_dev', function () {
-// 	return tools.vulcanizeTask(
-// 		source('content/mu-plugins/SZN_web_components/codeblocks/import-elements.html'),
-// 		source('content/mu-plugins/SZN_web_components/codeblocks/vulcanized/')
-// 	);
-// });
-
-tools.gulp.task('DevToProd_DeployPlugins', function() {
-	return tools.rsyncTask(
-		source('app'),
-		destination('app')
-	);
 });
 
 tools.gulp.task('DevToProd_DeployNecessaryWordpressFiles', function() {
@@ -123,13 +127,7 @@ tools.gulp.task('DevToProd_DeployNecessaryWordpressFiles', function() {
 	);
 });
 
-tools.gulp.task('DevToProd_DeployThemes', function() {
-	return tools.rsyncTask(
-		source('routing'),
-		destination('routing')
-	);
-});
-
+// Regular copy example
 tools.gulp.task('DevToProd_manifest', function() {
 	return tools.gulp.src(source('manifest.json'))
 		.pipe(tools.gulp.dest(destination()));
@@ -156,16 +154,3 @@ tools.gulp.task('generate-service-worker-prod', function(callback) {
 // 	tools.gulp.watch(source('content/mu-plugins/**/*.html'), ['DevToProd_htmlminify']);
 // });
 
-tools.gulp.task('DevToProd', [
-	'DevToProd_DeployNecessaryWordpressFiles',
-	'DevToProd_DeployThemes',
-	'DevToProd_DeployPlugins',
-	'DevToProd_css',
-	'DevToProd_cssthemes',
-	'DevToProd_uglifyjs',
-	'DevToProd_htmlminify',
-	// 'DevToProd_phpminify',
-	'DevToProd_htmlminifyElements',
-	'DevToProd_manifest',
-	'generate-service-worker-prod',
-]);

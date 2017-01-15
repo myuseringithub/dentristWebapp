@@ -1,0 +1,60 @@
+version: '2'
+# Tests & Build: source code --> distribution code
+
+# USAGE (from root directory): docker-compose -f ./setup/<docker-compose>.yml up
+services:
+    
+    deploymentEnvironment:
+        # change context to project's root folder.
+        build:
+            context: ../
+            dockerfile: ./setup/nodejs.dockerfile
+        # name of biuit image cannot be uppercase.
+        image: deploymentenvironment
+        command: bash -c ""
+    
+    # USAGE: docker-compose -f ./setup/deployment.docker-compose.yml up buildSourceCode
+    buildSourceCode:
+        extends: deploymentEnvironment
+        volumes:
+          - ../source:/tmp/source/
+          - ../setup/shellScript:/tmp/shellScript/
+          - ../setup/build:/tmp/build/
+          - ../distribution:/app
+        working_dir: /tmp/build/gulp_buildTool/
+        entrypoint: /tmp/shellScript/buildSourceCode.duringRuntime.sh
+        # overridden by entrypoint (This is useless).
+        # command: bash -c "tail -F -n0 /etc/hosts"
+    
+    # USAGE: docker-compose -f ./setup/deployment.docker-compose.yml up 
+    localUnitTest: 
+        extends: deploymentEnvironment
+        volumes:
+          - ../distribution:/app/
+          - ../setup/shellScript:/tmp/shellScript/
+          - ../source/test/:/tmp/test/
+        working_dir: /tmp/test/
+        # entrypoint allows cd command to work, in command: bash it doesn't.
+        entrypoint: /tmp/shellScript/testDistributionCode.sh
+        # use /bin/sh where bash is not installed (i.e. alpine-node image). Installed bash to the default image.
+        # command: bash -c ""
+    
+    # USAGE: docker-compose -f ./setup/deployment.docker-compose.yml -f ./setup/development.docker-compose.yml up --build wordpress localStagingTest
+    # USAGE: docker-compose -f ./setup/deployment.docker-compose.yml -f ./setup/development.docker-compose.yml up wordpress localStagingTest
+    localStagingTest:
+        extends: deploymentEnvironment
+        # Other option is to use links instead of connecting to localhost.
+        # depends_on:
+        #     - wordpress
+        # links:
+        #     - wordpress
+        # environment:
+        #     - HOST_IP=wordpress:443
+        environment:
+            - HOST_IP=localhost:80
+        network_mode: host
+        command: bash -c "printenv"
+
+
+
+
