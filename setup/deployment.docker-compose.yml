@@ -41,6 +41,7 @@ services:
     
     # USAGE: docker-compose -f ./setup/deployment.docker-compose.yml -f ./setup/development.docker-compose.yml up --build wordpress localStagingTest
     # USAGE: docker-compose -f ./setup/deployment.docker-compose.yml -f ./setup/development.docker-compose.yml up wordpress localStagingTest
+    # USAGE: docker-compose -f ./setup/deployment.docker-compose.yml up --rm localStagingTest
     localStagingTest:
         extends: deploymentEnvironment
         volumes:
