@@ -13,9 +13,9 @@ services:
       - "443:443"
     # All mounted volumes with specific host directory, replace the contents/files of the container folder. Thus the solution is to use entrypoint to populate the volume after it is created.
     volumes:
-      - "./../volume/app:/app/"
-      - "./../volume/apache/:/etc/apache2/sites-available/"
-      - "./../volume/log:/var/log/apache2/"
+      - "../../volume/app:/app/"
+      - "../../volume/apache/:/etc/apache2/sites-available/"
+      - "../../volume/log:/var/log/apache2/"
     environment:
       DEVELOPMENT: 'true'
       # WORDPRESS_DB_USER: MyUserIn8D

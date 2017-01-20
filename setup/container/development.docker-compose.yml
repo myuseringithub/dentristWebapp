@@ -9,16 +9,16 @@ services:
       file: ./wordpress.docker-compose.yml
       service: wordpress
     build:
-      context: ../
-      dockerfile: ./setup/wordpress.php5.6.dockerfile
+      context: ../../
+      dockerfile: ./setup/container/wordpress.php5.6.dockerfile
     depends_on:
       - mysql
     links:
       - mysql
     volumes:
-      - ../distribution:/tmp/distribution/
-      - ../content:/tmp/content/
-      - ../setup/shellScript:/tmp/shellScript/
+      - ../../distribution:/tmp/distribution/
+      - ../../content:/tmp/content/
+      - ../../setup/shellScript:/tmp/shellScript/
 
   mysql:
     extends:

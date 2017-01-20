@@ -7,8 +7,8 @@ services:
     deploymentEnvironment:
         # change context to project's root folder.
         build:
-            context: ../
-            dockerfile: ./setup/nodejs.dockerfile
+            context: ../../
+            dockerfile: ./setup/container/nodejs.dockerfile
         # name of biuit image cannot be uppercase.
         image: deploymentenvironment
         command: bash -c ""
@@ -17,10 +17,10 @@ services:
     buildSourceCode:
         extends: deploymentEnvironment
         volumes:
-          - ../source:/tmp/source/
-          - ../setup/shellScript:/tmp/shellScript/
-          - ../setup/build:/tmp/build/
-          - ../distribution:/app
+          - ../../source:/tmp/source/
+          - ../../setup/shellScript:/tmp/shellScript/
+          - ../../setup/build:/tmp/build/
+          - ../../distribution:/app
         working_dir: /tmp/build/gulp_buildTool/
         entrypoint: /tmp/shellScript/buildSourceCode.duringRuntime.sh
         # overridden by entrypoint (This is useless).
@@ -30,9 +30,9 @@ services:
     localUnitTest: 
         extends: deploymentEnvironment
         volumes:
-          - ../distribution:/app/
-          - ../setup/shellScript:/tmp/shellScript/
-          - ../setup/test/:/tmp/test/
+          - ../../distribution:/app/
+          - ../../setup/container/shellScript:/tmp/shellScript/
+          - ../../setup/test/:/tmp/test/
         working_dir: /tmp/test/
         # entrypoint allows cd command to work, in command: bash it doesn't.
         entrypoint: /tmp/shellScript/localUnitTest.duringRuntime.sh
@@ -45,8 +45,8 @@ services:
     localStagingTest:
         extends: deploymentEnvironment
         volumes:
-          - ../setup/shellScript:/tmp/shellScript/
-          - ../setup/test/:/tmp/test/
+          - ../../setup/shellScript:/tmp/shellScript/
+          - ../../setup/test/:/tmp/test/
         working_dir: /tmp/test/
         # Other option is to use links instead of connecting to localhost.
         # depends_on:

@@ -1,5 +1,5 @@
-# Forked from https://github.com/docker-library/wordpress/blob/master/php5.6/apache/Dockerfile
-FROM php:5.6-apache
+# Forked from https://github.com/docker-library/wordpress/tree/master/php7.0/apache
+FROM php:7.0-apache
 
 # PHP Extensions - install the PHP extensions we need
 RUN set -ex; \
@@ -32,10 +32,8 @@ RUN { \
 RUN a2enmod rewrite expires xml2enc proxy proxy_ajp proxy_http deflate headers proxy_balancer proxy_connect proxy_html macro ssl vhost_alias headers;
 
 # Environment Variables
-# https://wordpress.org/download/release-archive/
-ENV WORDPRESS_VERSION 4.6.1
-# SHA1 Checksum computed on the downloaded file, as a way to verify the content authenticity.
-ENV WORDPRESS_SHA1 027e065d30a64720624a7404a1820e6c6fff1202
+ENV WORDPRESS_VERSION 4.7
+ENV WORDPRESS_SHA1 1e14144c4db71421dc4ed22f94c3914dfc3b7020
 
 # Wordpress download:
 RUN set -ex; \
@@ -47,7 +45,8 @@ RUN set -ex; \
 	chown -R www-data:www-data /usr/src/wordpress
 
 # update and install essentials:
-RUN apt-get -y update && apt-get -y upgrade && apt-get -y install vim; apt-get -y install nano; pecl install zip;
+RUN apt-get -y update && apt-get -y upgrade && apt-get -y install vim;
+RUN apt-get -y install nano
 
 # Volumes:
 VOLUME /app/
@@ -57,17 +56,15 @@ VOLUME /etc/apache2/sites-available/
 RUN rm -r /etc/apache2/sites-enabled/*;
 
 # Copy content to container:
-# COPY ./content/ /tmp/content/
-# COPY ./distribution/ /tmp/distribution/
+COPY ./content/ /tmp/content/
 
+COPY ./setup/container/shellScript/wordpressContainerEntrypoint.sh /usr/local/bin/
+COPY ./setup/container/shellScript/addContentAndConfigs.sh /usr/local/bin/
 # Apparently when copied from windows, execution permissions should be granted.
-COPY ./setup/shellScript/wordpressContainerEntrypoint.duringRuntime.sh /usr/local/bin/
-COPY ./setup/shellScript/addContentAndConfigs.duringRuntime.sh /usr/local/bin/ 
-RUN chmod +x /usr/local/bin/wordpressContainerEntrypoint.duringRuntime.sh
-RUN chmod +x /usr/local/bin/addContentAndConfigs.duringRuntime.sh
-# RUN find /usr/local/bin/ -type f -exec chmod +x {} \;
+RUN chmod +x /usr/local/bin/wordpressContainerEntrypoint.sh
+RUN chmod +x /usr/local/bin/addContentAndConfigs.sh
 
 # RUN echo 'ServerName localhost' >> /etc/apache2/conf-available/000-default.conf
 
-ENTRYPOINT ["wordpressContainerEntrypoint.duringRuntime.sh"]
+ENTRYPOINT ["wordpressContainerEntrypoint.sh"]
 CMD ["apache2-foreground"]
