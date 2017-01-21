@@ -9,7 +9,7 @@ production.container() {
 }
 
 production.service() {
-    docker service create --name webapp-dentrist --network go-demo <image>:<version>
+    docker service create --name webapp-dentrist --network webappDentrist <image>:<version>
 }
 
 development() {

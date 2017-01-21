@@ -6,7 +6,7 @@ node("docker") {
     
     // Pull the latest code from the repository
     stage("Pull") {
-        git "https://github.com/vfarcic/go-demo.git"
+        git "https://github.com/myuseringithub/webapp-dentrist"
     }
     
     // That way we don't need to repeat "-f <docker-compose.yml>" argument every time we execute docker-compose.
