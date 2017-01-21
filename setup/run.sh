@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 # ./setup/run.sh <functionName>
 
-production() {
+production.container() {
     # IMPORTANT: should open port 8085 to localhost from docker-machine.
     # Doesn't work inside docker-machine even if port is open for localhost. Only works directly on host.
     # Run production containers.
     docker-compose -f ./setup/container/production.docker-compose.yml up
+}
+
+production.service() {
+    docker service create --name webapp-dentrist --network go-demo <image>:<version>
 }
 
 development() {
@@ -20,7 +24,7 @@ deployment.test() {
     docker-compose -f ./setup/container/deployment.docker-compose.yml up localUnitTest
 }
 
-deployment.stage() {
+deployment.staging() {
     docker-compose -f ./setup/container/deployment.docker-compose.yml -f ./setup/container/development.docker-compose.yml up wordpress localStagingTest
 }
 
