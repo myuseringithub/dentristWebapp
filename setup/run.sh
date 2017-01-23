@@ -8,8 +8,14 @@ production.container() {
     docker-compose -f ./setup/container/production.docker-compose.yml up
 }
 
-production.service() {
-    docker service create --name webapp-dentrist --network webappDentrist <image>:<version>
+production.stack() { # TODO: 
+    docker-compose -f ./setup/container/production.docker-compose.yml up
+}
+
+production.service() { # TODO: 
+    docker service create --name webappDentristApp --network webappDentrist dentristwebapp:latest
+    docker service create --name webappDentristMysql --network webappDentrist mysql:latest
+    docker service create --name webappDentristPhpmyadmin --network webappDentrist phpmyadmin:latest
 }
 
 development() {

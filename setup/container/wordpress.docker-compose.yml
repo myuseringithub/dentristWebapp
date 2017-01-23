@@ -4,7 +4,7 @@ services:
 
   wordpress:
       # Name of the resulted image out of the build.
-    image: myuserindocker/webapp-dentrist
+    image: myuserindocker/dentristwebapp:latest
     environment:
       WORDPRESS_DB_HOST: mysql:3306
     container_name: wordpress

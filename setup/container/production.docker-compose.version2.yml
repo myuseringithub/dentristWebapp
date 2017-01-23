@@ -1,0 +1,29 @@
+version: '2'
+
+# USAGE (from root directory): docker-compose -f ./setup/<docker-compose>.yml up
+services:
+
+  wordpress:
+    extends:
+      # relative to the position of current file.
+      file: ./wordpress.docker-compose.yml
+      service: wordpress
+    restart: always
+    depends_on:
+      - mysql 
+    links:
+      - mysql
+
+  mysql:
+    extends:
+      file: ./mysql.docker-compose.yml
+      service: mysql
+
+  phpmyadmin:
+    extends:
+      file: ./phpmyadmin.docker-compose.yml
+      service: phpmyadmin
+    depends_on:
+      - mysql
+    links:
+      - mysql:db
