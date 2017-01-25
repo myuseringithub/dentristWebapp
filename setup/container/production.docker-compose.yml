@@ -59,8 +59,10 @@ services:
     container_name: phpmyadmin
     ports:
      - 81:80
-    # IMPORTANT: How does "mysql" host translated to "db" host for usage in phpmyadmin when yaml version 3 is used.
+    # IMPORTANT: Check if extrahosts work. (How does "mysql" host translated to "db" host for usage in phpmyadmin when yaml version 3 is used.)
     # links:
     #   - mysql:db
+    extra_hosts:
+      - "mysql:db"
     networks:
       - default

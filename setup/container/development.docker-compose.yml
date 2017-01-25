@@ -11,6 +11,8 @@ services:
     build:
       context: ../../
       dockerfile: ./setup/container/wordpress.php5.6.dockerfile
+    environment:
+      DEPLOYMENT: 'development'
     depends_on:
       - mysql
     links:
