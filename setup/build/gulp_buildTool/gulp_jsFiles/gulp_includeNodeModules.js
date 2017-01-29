@@ -9,17 +9,18 @@ var tools = {
   browserSync: require('browser-sync'),
   merge: require('merge-stream'), // A method to dynamically add more sources to the stream.
   path: require('path'),
-  fs: require('fs'),
+  filesystem: require('fs'),
   glob: require('glob-all'),
   historyApiFallback: require('connect-history-api-fallback'),
   crypto: require('crypto'),
   checktype: require('type-of-is'),
   cleanCSS: require('gulp-clean-css'),
-  vfs: require('vinyl-fs') // allows to copy symlinks as symlinks and not follow down the tree of files.
+  vfs: require('vinyl-fs'), // allows to copy symlinks as symlinks and not follow down the tree of files.
+  childProcess: require('child_process'), // for running shell commands - DOESN'T Work
+  mkdirp: require('mkdirp'),
+  Rsync: require('rsync')
 
 };
-
-var fs = require('fs'); // Should change the usage of fs to tools.fs
 
 var AUTOPREFIXER_BROWSERS = [
   'ie >= 10',
@@ -210,26 +211,58 @@ tools['vulcanizeTask'] = vulcanizeTask = function(sources, destination) {
     }));
 };
 
-tools['rsyncTask'] = rsyncTask = function(source, destination) {
-  tools.gulp.src(source)
-    .pipe(tools.plugins.rsync({
-      // paths outside of root cannot be specified.
-      root: source,
-      destination: destination,
-      incremental: true,
-      compress: true,
-      recursive: true,
-      // clean: true, // --delete - deletes files on target. Files which are not present on source.
-      // dryrun: true, // for tests use dryrun which will not change files only mimic the run.
-      // progress: true,
-      // skip files which are newer on target/reciever path.
-      update: true
-      // args this way doesn't work ! should use the equevalent options in API
-      // args: ['--verbose', '--compress', '--update', '--dry-run']
-      // DOESN'T WORK FOR MULTIPLE PATHS - error "outside of root" When relatice is off rsync can recieve multiple paths through gulp.src.
-      // relative: false
-    }));
+// tools['rsyncTask'] = rsyncTask = function(rootSource, source, destination) {
+//   return tools.gulp.src(source)
+//     .pipe(tools.plugins.rsync({
+//       // paths outside of root cannot be specified.
+//       root: rootSource,
+//       destination: destination,
+//       incremental: true,
+//       compress: true,
+//       // recursive: true,
+//       // clean: true, // --delete - deletes files on target. Files which are not present on source.
+//       // dryrun: true, // for tests use dryrun which will not change files only mimic the run.
+//       // progress: true,
+//       // skip files which are newer on target/reciever path.
+//       update: true
+//       // args this way doesn't work ! should use the equevalent options in API
+//       // args: ['--verbose', '--compress', '--update', '--dry-run']
+//       // DOESN'T WORK FOR MULTIPLE PATHS - error "outside of root" When relatice is off rsync can recieve multiple paths through gulp.src.
+//       // relative: false
+//     }));
+// };
+
+tools['rsyncTask'] = rsyncTask = function(rootSource, source, destination, extraOptions) {
+    let options = {
+      'a': true, // archive
+      'v': true, // verbose
+      'z': true, // compress
+      'R': false, // relative
+      'r': true // recursive
+    };
+    if(typeof extraOptions !== 'undefined') {
+      options = Object.assign(options, extraOptions);
+    } 
+    var rsync = new tools.Rsync()
+    .flags(options)
+    // .exclude('+ */')
+    // .include('/tmp/source/**/*')
+    .source(tools.dist(rootSource, source))
+    .destination(tools.dist(destination, source));
+    
+    // Create directory.
+    return new Promise(resolve => {
+      tools.mkdirp(tools.dist(destination, source), function(err) {     
+        // Execute the command 
+        rsync.execute(function(error, code, cmd) {
+          resolve();
+        }, function(data) {
+          console.log(' ' + data);
+        });
+      });
+    });
 };
+
 
 tools['generateServiceWorkerTask'] = generateServiceWorkerTask = function(rootDir, callback) {
   tools.swPrecache.write(tools.path.join(rootDir, 'service-worker.js'), {
@@ -263,7 +296,7 @@ tools['ensureFiles'] = ensureFiles = function(files, cb) {
     var fileFound = false;
 
     try {
-      fileFound = fs.statSync(filePath).isFile();
+      fileFound = tools.filesystem.statSync(filePath).isFile();
     } catch (e) { }
 
     if (!fileFound) {

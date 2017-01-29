@@ -5,7 +5,7 @@ set -euo pipefail
 # TODO: Add ability to configure wp-config using environment variables.
 # echo "SZN - This is a variable number 1: "
 # echo $1;
-source /tmp/shellScript/addContentAndConfigs.duringRuntime.sh;
+source /tmp/shellScript/wordpressAddContentAndConfigs.sh;
 
 # usage: file_env VAR [DEFAULT]
 #    ie: file_env 'XYZ_DB_PASSWORD' 'example'

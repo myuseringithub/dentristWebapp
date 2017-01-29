@@ -5,11 +5,11 @@ production.container() {
     # IMPORTANT: should open port 8085 to localhost from docker-machine.
     # Doesn't work inside docker-machine even if port is open for localhost. Only works directly on host.
     # Run production containers.
-    docker-compose -f ./setup/container/production.docker-compose.yml up
+    docker-compose -f ./setup/container/production.dockerCompose.yml up
 }
 
 production.stack() { # TODO: 
-    docker-compose -f ./setup/container/production.docker-compose.yml up
+    docker-compose -f ./setup/container/production.dockerCompose.yml up
 }
 
 production.service() { # TODO: 
@@ -18,21 +18,37 @@ production.service() { # TODO:
     docker service create --name webappDentristPhpmyadmin --network webappDentrist phpmyadmin:latest
 }
 
-development() {
-    docker-compose -f ./setup/container/development.docker-compose.yml up
+development() { # ⭐
+    docker-compose -f ./setup/container/development.dockerCompose.yml up
 }
 
-deployment.build() {
-    docker-compose -f ./setup/container/deployment.docker-compose.yml up buildSourceCode
+deployment.build() { # ⭐
+    # development / production
+    export DEPLOYMENT=production
+    export DEPLOYMENT=development
+
+    docker-compose -f ./setup/container/deployment.dockerCompose.yml up buildDistributionCode
 }
 
-deployment.test() {
-    docker-compose -f ./setup/container/deployment.docker-compose.yml up localUnitTest
+deployment.test() { # ⭐
+    docker-compose -f ./setup/container/deployment.dockerCompose.yml up localUnitTest
 }
 
-deployment.staging() {
-    docker-compose -f ./setup/container/deployment.docker-compose.yml -f ./setup/container/development.docker-compose.yml up wordpress localStagingTest
+deployment.staging() { # ⭐
+    # USAGE: docker-compose -f ./setup/deployment.dockerCompose.yml -f ./setup/development.dockerCompose.yml up --build wordpress localStagingTest
+    # USAGE: docker-compose -f ./setup/deployment.dockerCompose.yml up --rm localStagingTest
+
+    docker-compose -f ./setup/container/deployment.dockerCompose.yml -f ./setup/container/development.dockerCompose.yml up wordpress localStagingTest
 }
 
-# IMPORTANT: call arguments verbatim. i.e. allows first argument to call functions inside file. So that it could be called as "./setup/run.sh <functionName>".
+deployment.buildImage() { # ⭐
+    # development / production
+    export DEPLOYMENT=production
+    export DEPLOYMENT=development
+    # export COMPOSE_PROJECT_NAME=dentrist # Not needed as name is taken from image field.
+
+    docker-compose -f ./setup/container/deployment.dockerCompose.yml build buildImage
+}
+
+# Important: call arguments verbatim. i.e. allows first argument to call functions inside file. So that it could be called as "./setup/run.sh <functionName>".
 $@

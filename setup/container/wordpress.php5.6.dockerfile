@@ -60,14 +60,31 @@ RUN rm -r /etc/apache2/sites-enabled/*;
 # COPY ./content/ /tmp/content/
 # COPY ./distribution/ /tmp/distribution/
 
-# Apparently when copied from windows, execution permissions should be granted.
-COPY ./setup/container/shellScript/wordpressContainerEntrypoint.duringRuntime.sh /usr/local/bin/
-COPY ./setup/container/shellScript/addContentAndConfigs.duringRuntime.sh /usr/local/bin/ 
-RUN chmod +x /usr/local/bin/wordpressContainerEntrypoint.duringRuntime.sh
-RUN chmod +x /usr/local/bin/addContentAndConfigs.duringRuntime.sh
-# RUN find /usr/local/bin/ -type f -exec chmod +x {} \;
-
 # RUN echo 'ServerName localhost' >> /etc/apache2/conf-available/000-default.conf
 
-ENTRYPOINT ["wordpressContainerEntrypoint.duringRuntime.sh"]
+# Install development dependencies:
+RUN set -ex; \
+	if [ ! "${DEPLOYMENT}" = "production" ]; then \
+		    # Install git
+			apt-get install -y git-all; \
+			# Install Nodejs
+			curl -sL https://deb.nodesource.com/setup_7.x | bash -; \
+			apt-get install -y nodejs; \
+			npm install n -g; \
+			NODE_MIRROR=https://nodejs.org/download/nightly/ n v8.0.0-nightly20170126a67a04d765; \
+			n v8.0.0-nightly20170126a67a04d765; \
+			node -v; \
+			# gulp
+			npm install gulpjs/gulp.git#4.0 -g; \
+			npm install gulp-cli -g; \
+			# rsync
+			apt-get install rsync -y; \
+	fi;
+
+# Apparently when copied from windows, execution permissions should be granted.
+COPY ./setup/container/shellScript/wordpressContainerEntrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/wordpressContainerEntrypoint.sh
+# RUN find /usr/local/bin/ -type f -exec chmod +x {} \;
+ENTRYPOINT ["wordpressContainerEntrypoint.sh"]
+
 CMD ["apache2-foreground"]

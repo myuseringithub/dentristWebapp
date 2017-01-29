@@ -1,4 +1,4 @@
-version: '2'
+version: '2.1'
 
 # USAGE (from root directory): docker-compose -f ./setup/<docker-compose>.yml up
 services:
@@ -6,30 +6,29 @@ services:
   wordpress:
     extends:
       # relative to the position of current file.
-      file: ./wordpress.docker-compose.yml
-      service: wordpress
-    build:
-      context: ../../
-      dockerfile: ./setup/container/wordpress.php5.6.dockerfile
+      file: ./wordpress.dockerCompose.yml
+      service: wordpressBuild
     environment:
-      DEPLOYMENT: 'development'
+        DEPLOYMENT: ${DEPLOYMENT:-development}
     depends_on:
       - mysql
     links:
       - mysql
+    working_dir: /tmp/build/gulp_buildTool/
     volumes:
       - ../../distribution:/tmp/distribution/
       - ../../content:/tmp/content/
-      - ../../setup/shellScript:/tmp/shellScript/
+      - ../../setup/container/shellScript:/tmp/shellScript/
+      - ../../setup/build:/tmp/build/
 
   mysql:
     extends:
-      file: ./mysql.docker-compose.yml
+      file: ./mysql.dockerCompose.yml
       service: mysql
 
   phpmyadmin:
     extends:
-      file: ./phpmyadmin.docker-compose.yml
+      file: ./phpmyadmin.dockerCompose.yml
       service: phpmyadmin
     depends_on:
       - mysql
