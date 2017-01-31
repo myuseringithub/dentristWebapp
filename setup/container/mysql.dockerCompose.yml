@@ -15,7 +15,7 @@ services:
         container_name: mysql
         volumes:
             # - "./../volume/mysqlDatabase/:/var/lib/mysql"
-            - "../../content/mysqlDatabase/:/docker-entrypoint-initdb.d"
+            - "../../volume/mysqlDatabase/:/docker-entrypoint-initdb.d"
         environment:
             MYSQL_ROOT_PASSWORD: wordpress
             # MYSQL_USER: MyUserIn8D

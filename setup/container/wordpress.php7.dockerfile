@@ -58,13 +58,13 @@ RUN rm -r /etc/apache2/sites-enabled/*;
 # Copy content to container:
 COPY ./content/ /tmp/content/
 
-COPY ./setup/container/shellScript/wordpressContainerEntrypoint.sh /usr/local/bin/
+COPY ./setup/container/shellScript/wordpressContainer.entrypoint.sh /usr/local/bin/
 COPY ./setup/container/shellScript/addContentAndConfigs.sh /usr/local/bin/
 # Apparently when copied from windows, execution permissions should be granted.
-RUN chmod +x /usr/local/bin/wordpressContainerEntrypoint.sh
+RUN chmod +x /usr/local/bin/wordpressContainer.entrypoint.sh
 RUN chmod +x /usr/local/bin/addContentAndConfigs.sh
 
 # RUN echo 'ServerName localhost' >> /etc/apache2/conf-available/000-default.conf
 
-ENTRYPOINT ["wordpressContainerEntrypoint.sh"]
+ENTRYPOINT ["wordpressContainer.entrypoint.sh"]
 CMD ["apache2-foreground"]

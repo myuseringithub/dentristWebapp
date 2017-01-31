@@ -8,7 +8,7 @@ services:
         build: # change context to project's root folder.
             context: ../../
             dockerfile: ./setup/container/deploymentEnvironment.dockerfile
-        image: deploymentenvironment # name of biult image cannot be uppercase.
+        image: dentrist-deployment # name of biult image cannot be uppercase.
         # command: bash -c "sleep 100000"
 
     buildDistributionCode: # Build source code & download project dependencies.
@@ -20,9 +20,9 @@ services:
           - ../../source:/tmp/source/
           - ../../setup/container/shellScript:/tmp/shellScript/
           - ../../setup/build:/tmp/build/
-          - ../../distribution:/app
+          - ../../distribution:/app/
         working_dir: /tmp/build/gulp_buildTool/
-        entrypoint: /tmp/shellScript/buildSourceCode.sh
+        entrypoint: /tmp/shellScript/buildSourceCode.entrypoint.sh
 
     localUnitTest:
         extends: deploymentEnvironment
@@ -33,15 +33,15 @@ services:
           - ../../setup/test/:/tmp/test/
         working_dir: /tmp/test/
         # entrypoint allows cd command to work, in command: bash it doesn't.
-        entrypoint: /tmp/shellScript/localUnitTest.sh
-    
+        # entrypoint: /tmp/shellScript/localUnitTest.sh
+        command: bash -c "npm install; npm run test;"
+
     localStagingTest:
         extends: deploymentEnvironment
         container_name: staging
         volumes:
           - ../../setup/container/shellScript:/tmp/shellScript/
           - ../../setup/test/:/tmp/test/
-        working_dir: /tmp/test/
         # Other option is to use links instead of connecting to localhost.
         # depends_on:
         #     - wordpress
@@ -52,16 +52,14 @@ services:
         environment:
             - HOST_IP=localhost:80
         network_mode: host
-        entrypoint: /tmp/shellScript/localStagingTest.sh
+        working_dir: /tmp/test/
+        # entrypoint: /tmp/shellScript/localStagingTest.sh
         # command: bash -c "printenv"
+        command: bash -c "npm install; npm run localStagingTest;"
 
+    # Used only to build image.
     buildImage:
         extends:
             # relative to the position of current file.
             file: ./wordpress.dockerCompose.yml
             service: wordpressBuild
-        environment:
-            DEPLOYMENT: ${DEPLOYMENT:-production}
-
-
-

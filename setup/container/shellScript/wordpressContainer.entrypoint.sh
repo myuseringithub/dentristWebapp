@@ -1,11 +1,29 @@
 #!/bin/bash
 set -euo pipefail
 
-# SZN: 
+echo "😄 SZN: Build Currect file structure for Apache, PHP, & Wordpress Content & Configurations. Deploying as ${DEPLOYMENT} .";
+# set -ex; 
 # TODO: Add ability to configure wp-config using environment variables.
-# echo "SZN - This is a variable number 1: "
-# echo $1;
-source /tmp/shellScript/wordpressAddContentAndConfigs.sh;
+
+# Previously used to load official wordpress dockerfile.
+# # mute CMD from official wordpress image
+# sed -i -e 's/^exec "$@"/#exec "$@"/g' /usr/local/bin/docker-entrypoint.sh
+# # execute bash script from official wordpress image
+# source docker-entrypoint.sh
+# # execute CMD
+# exec "$@"
+
+if [ "${DEPLOYMENT}" = "development" ]; then 
+    # Copy distribution on Runtime as opposed to production, which is build into to image.
+    node --harmony `which gulp` copy:distribution
+    node --harmony `which gulp` watch:distribution
+    # node --harmony `which gulp` change:appPermissions
+fi
+
+# ⭐ Copy Wordpress from downloaded directory. Change Wordpress default directory. $_ = last argument passed to last command. Copy from downloaded wordpress (forked from official docker image - https://github.com/docker-library/wordpress/blob/master/docker-entrypoint.sh)
+mkdir -p /app/root/site;
+tar cf - --one-file-system -C /usr/src/wordpress . | tar xf - -C /app/root/site;
+rm -r /usr/src/wordpress;
 
 # usage: file_env VAR [DEFAULT]
 #    ie: file_env 'XYZ_DB_PASSWORD' 'example'

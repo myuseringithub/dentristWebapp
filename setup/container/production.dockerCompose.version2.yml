@@ -7,7 +7,7 @@ services:
     extends:
       # relative to the position of current file.
       file: ./wordpress.dockerCompose.yml
-      service: wordpress
+      service: wordpressImage
     restart: always
     depends_on:
       - mysql 

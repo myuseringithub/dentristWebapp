@@ -16,10 +16,11 @@ services:
       - mysql
     working_dir: /tmp/build/gulp_buildTool/
     volumes:
-      - ../../distribution:/tmp/distribution/
-      - ../../content:/tmp/content/
       - ../../setup/container/shellScript:/tmp/shellScript/
       - ../../setup/build:/tmp/build/
+      - ../../distribution:/tmp/distribution/
+      - ../../privateRepository:/tmp/content/
+      # - "../../volume/apache/:/etc/apache2/sites-available/"
 
   mysql:
     extends:

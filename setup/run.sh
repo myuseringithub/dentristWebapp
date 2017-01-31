@@ -18,15 +18,16 @@ production.service() { # TODO:
     docker service create --name webappDentristPhpmyadmin --network webappDentrist phpmyadmin:latest
 }
 
-development() { # ⭐
+development() { # ⭐ Run locally either for development or production like testing.
+    export DEPLOYMENT=production
+    export DEPLOYMENT=development
     docker-compose -f ./setup/container/development.dockerCompose.yml up
 }
 
-deployment.build() { # ⭐
+deployment.buildDistribution() { # ⭐
     # development / production
     export DEPLOYMENT=production
     export DEPLOYMENT=development
-
     docker-compose -f ./setup/container/deployment.dockerCompose.yml up buildDistributionCode
 }
 
@@ -37,7 +38,6 @@ deployment.test() { # ⭐
 deployment.staging() { # ⭐
     # USAGE: docker-compose -f ./setup/deployment.dockerCompose.yml -f ./setup/development.dockerCompose.yml up --build wordpress localStagingTest
     # USAGE: docker-compose -f ./setup/deployment.dockerCompose.yml up --rm localStagingTest
-
     docker-compose -f ./setup/container/deployment.dockerCompose.yml -f ./setup/container/development.dockerCompose.yml up wordpress localStagingTest
 }
 
@@ -47,7 +47,12 @@ deployment.buildImage() { # ⭐
     export DEPLOYMENT=development
     # export COMPOSE_PROJECT_NAME=dentrist # Not needed as name is taken from image field.
 
+    # Problem cannot pass arguments to dockerfile
     docker-compose -f ./setup/container/deployment.dockerCompose.yml build buildImage
+
+    # Docker CLI implimentation :
+    # context is relative to current working directory not like in compose which is relative.
+    # docker build --build-arg DEPLOYMENT=${DEPLOYMENT} --tag dentrist-${DEPLOYMENT} -f ./setup/container/wordpress.php5.6.dockerfile ./
 }
 
 # Important: call arguments verbatim. i.e. allows first argument to call functions inside file. So that it could be called as "./setup/run.sh <functionName>".

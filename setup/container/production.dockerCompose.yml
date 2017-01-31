@@ -15,7 +15,6 @@ services:
       - "443:443"
     volumes:
       - "../../volume/app:/app/"
-      - "../../volume/apache/:/etc/apache2/sites-available/"
       - "../../volume/log:/var/log/apache2/"
     environment:
       DEPLOYMENT: production
@@ -36,7 +35,7 @@ services:
     container_name: mysql
     volumes:
         # - "./../volume/mysqlDatabase/:/var/lib/mysql"
-        - "../../content/mysqlDatabase/:/docker-entrypoint-initdb.d"
+        - "../../volume/mysqlDatabase/:/docker-entrypoint-initdb.d"
     environment:
         # MYSQL_ROOT_PASSWORD: wordpress
         # # MYSQL_USER: MyUserIn8D
