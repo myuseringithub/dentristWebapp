@@ -1,4 +1,9 @@
 #!/bin/bash
 
-#⭐ Install Bower:
-npm install -g bower
+if [ -z "$1" ]; then 
+    #⭐ Install Bower:
+    npm install bower -g
+elif [ $1 == "uninstall" ]; then
+    npm uninstall bower -g
+fi;
+

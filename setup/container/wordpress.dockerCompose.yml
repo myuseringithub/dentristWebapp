@@ -21,8 +21,7 @@ services:
       WORDPRESS_DB_NAME: WebApp_Dentrist_Database
       # WORDPRESS_TABLE_PREFIX: c2xj4zrxos_
     # entrypoint: updateDefaultEntrypoint.sh
-
-  
+ 
   wordpressImage:
     extends: wordpress
     image: myuserindocker/dentristwebapp:latest

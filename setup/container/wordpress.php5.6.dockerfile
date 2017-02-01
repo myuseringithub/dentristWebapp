@@ -3,7 +3,7 @@ FROM php:5.6-apache
 
 # PHP Extensions - install the PHP extensions we need
 RUN set -ex; \
-	apt-get update; \
+	apt-get update -y; apt-get -y upgrade; \
 	apt-get install -y libjpeg-dev libpng12-dev; \
 	rm -rf /var/lib/apt/lists/*; \
 	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
@@ -33,9 +33,9 @@ RUN set -ex; \
 	curl -o wordpress.tar.gz -fSL "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz"; \
 	echo "${WORDPRESS_SHA1} *wordpress.tar.gz" | sha1sum -c -; \
 	# upstream tarballs include ./wordpress/ so this gives us /usr/src/wordpress
-	tar -xzf wordpress.tar.gz -C /usr/src/; \
+	tar -xzf wordpress.tar.gz -C /usr/src/; mv /usr/src/wordpress /usr/src/site; \
 	rm wordpress.tar.gz; \
-	chown -R www-data:www-data /usr/src/wordpress
+	chown -R www-data:www-data /usr/src/site;
 
 # Environment Variables & Arguments
 # default value is override if build argument is specified in docker compose.
@@ -43,12 +43,18 @@ ARG DEPLOYMENT=production
 ENV DEPLOYMENT ${DEPLOYMENT}
 
 COPY ./setup/shellScript/ /tmp/shellScript/
+# copy distribution to image.
+COPY ./distribution /tmp/distribution
+COPY ./setup/build/gulp_buildTool /tmp/build/gulp_buildTool
+COPY ./privateRepository/ /tmp/content/
+# Volumes:
+VOLUME /app/
+WORKDIR /tmp/build/gulp_buildTool
+
 RUN set -ex; \
     # Apparently when copied from windows, execution permissions should be granted.
     find /tmp/shellScript/ -type f -exec chmod +x {} \; \
 	; \
-	# update and install essentials:
-	apt-get -y update; apt-get -y upgrade; apt-get -y install vim; apt-get -y install nano; pecl install zip; \
 	#  Apache
 	# RUN apt-get install libapache2-mod-macro;
 	# Apache mods to enable: Reverse proxy, macro, ssl, vhost_alias
@@ -62,32 +68,30 @@ RUN set -ex; \
 	    /tmp/shellScript/gulp.installation.sh; \
 		/tmp/shellScript/rsync.installation.sh; \
 	elif [ "${DEPLOYMENT}" = "development" ]; then \
+		apt-get -y update; apt-get -y upgrade; \
+		apt-get install -y nano; apt-get install -y vim; pecl install zip; \
+		# apt-get install -y --no-install-recommends vim nano;  \
     	/tmp/shellScript/git.installation.sh; \
 		/tmp/shellScript/nodejs.installation.sh; \
 	    /tmp/shellScript/gulp.installation.sh; \
 		/tmp/shellScript/rsync.installation.sh; \
-	fi;
-
-# copy distribution to image.
-COPY ./distribution /tmp/distribution
-COPY ./setup/build/gulp_buildTool /tmp/build/gulp_buildTool
-COPY ./privateRepository/ /tmp/content/
-WORKDIR /tmp/build/gulp_buildTool
-RUN set -ex; \
+	fi; \
 	# Copy configuration files.
 	node --harmony `which gulp` copy:conf; \
 	if [ "${DEPLOYMENT}" = "production" ]; then \
 		# Gulp copy
 		node --harmony `which gulp` copy:distribution; \
-	fi;
-
-# Volumes:
-VOLUME /app/
+	fi; \
+	/tmp/shellScript/git.installation.sh uninstall; \
+	/tmp/shellScript/nodejs.installation.sh uninstall; \
+	/tmp/shellScript/gulp.installation.sh uninstall; \
+	/tmp/shellScript/rsync.installation.sh uninstall; \
+    rm -rf /var/lib/apt/lists/*; \
+	rm -r /tmp/shellScript/;
 
 # Apparently when copied from windows, execution permissions should be granted.
 COPY ./setup/container/shellScript/wordpressContainer.entrypoint.sh /tmp/shellScript/
 RUN find /tmp/shellScript/ -type f -exec chmod +x {} \;
-
 # RUN find /usr/local/bin/ -type f -exec chmod +x {} \;
 ENTRYPOINT ["/tmp/shellScript/wordpressContainer.entrypoint.sh"]
 
