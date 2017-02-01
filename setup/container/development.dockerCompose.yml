@@ -19,8 +19,11 @@ services:
       - ../../setup/container/shellScript:/tmp/shellScript/
       - ../../setup/build:/tmp/build/
       - ../../distribution:/tmp/distribution/
-      - ../../privateRepository:/tmp/content/
-      - "../../volume/apache/:/etc/apache2/sites-available/"
+      - ../../privateRepository:/tmp/privateRepository/
+      # - "../../volume/apache/:/etc/apache2/sites-available/"
+      - "../../volume/wordpressUploads:/app/root/content/uploads/"
+      - "../../volume/app:/app/"
+      - "../../volume/log:/var/log/apache2/"
 
   mysql:
     extends:

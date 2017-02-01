@@ -73,7 +73,7 @@ gulp.task('watch:source', ()=> {
 		{interval: INTERVAL, usePolling: usePolling}, 
 		gulp.series(
 			'copy:bower_packageManager',
-			'bower'
+			'install:bower'
 		)
 	);
 	// jspm
@@ -84,7 +84,7 @@ gulp.task('watch:source', ()=> {
 		{interval: INTERVAL, usePolling: usePolling}, 
 		gulp.series(
 			'copy:jspm_packages_modules',
-			'jspm'
+			'install:jspm'
 		)
 	);
 	// root

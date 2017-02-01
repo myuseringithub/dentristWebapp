@@ -3,9 +3,8 @@ gulp.task('copy:dist:root', ()=> { return rsyncTask( '/tmp/distribution/clientSi
 gulp.task('copy:dist:assets', ()=> { return rsyncTask( '/tmp/distribution/clientSide/assets/', '/', '/app/root/app/' ); });
 gulp.task('copy:dist:muplugins', ()=> { return rsyncTask( '/tmp/distribution/serverSide/wordpressPlugins_mustUsePlugins/', '/', '/app/root/content/mu-plugins/' ); });
 gulp.task('copy:dist:plugins', ()=> { return rsyncTask( '/tmp/distribution/serverSide/wordpressPlugins_composer_dependencyManager/plugins/', '/', '/app/root/content/plugins/' ); });
-gulp.task('copy:dist:plugins', ()=> { return rsyncTask( '/tmp/distribution/serverSide/wordpressPlugins_composer_dependencyManager/plugins/', '/', '/app/root/content/plugins/' ); });
+gulp.task('copy:dist:manualPlugins', ()=> {	return rsyncTask( '/tmp/distribution/serverSide/wordpressPlugins_manuallyUpdated/', '/', '/app/root/content/plugins/' ); });
 gulp.task('copy:dist:routing', ()=> { return rsyncTask( '/tmp/distribution/clientSide/routing/', '/', '/app/root/content/themes/routing/' ); });
-gulp.task('copy:dist:manualPlugins', ()=> {	return rsyncTask( '/tmp/content/wordpressPlugins_manuallyUpdated/', '/', '/app/root/content/plugins/' ); });
 gulp.task('copy:dist:bower', ()=> {	return rsyncTask( '/tmp/distribution/clientSide/bower_packageManager/bower_components/', '/', '/app/root/app/sharedApp/elements/bower_components/' ); });
 gulp.task('copy:dist:jspm', ()=> { return rsyncTask( '/tmp/distribution/clientSide/jspm_packages_modules/jspm_packages/', '/', '/app/root/app/sharedApp/javascripts/jspm_packages/' );
 });

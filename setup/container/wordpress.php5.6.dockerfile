@@ -37,7 +37,7 @@ RUN set -ex; \
 	rm wordpress.tar.gz; \
 	chown -R www-data:www-data /usr/src/site; \
 	mkdir -p /usr/src/; \
-	echo "<?php require $_SERVER[\'DOCUMENT_ROOT\'] . \'/wp-config.php\'" > /usr/src/wp-config.php;
+	echo "<?php require \$_SERVER['DOCUMENT_ROOT'] . '/wp-config.php';" > /usr/src/wp-config.php;
 
 # Environment Variables & Arguments
 # default value is override if build argument is specified in docker compose.
@@ -48,7 +48,7 @@ COPY ./setup/shellScript/ /tmp/shellScript/
 # copy distribution to image.
 COPY ./distribution /tmp/distribution
 COPY ./setup/build/gulp_buildTool /tmp/build/gulp_buildTool
-COPY ./privateRepository/ /tmp/content/
+COPY ./privateRepository/ /tmp/privateRepository/
 # Volumes:
 VOLUME /app/
 WORKDIR /tmp/build/gulp_buildTool

@@ -7,5 +7,5 @@ let path = require("path");
 let rsyncTask = require(path.join(config.TaskModulePath, 'rsync.js'));
 
 module.exports = ()=> {
-	return rsyncTask( '/tmp/content/', 'wordpressConfiguration/', '/app/' );
+	return rsyncTask( '/tmp/privateRepository/', 'wordpressConfiguration/', '/app/' );
 };
