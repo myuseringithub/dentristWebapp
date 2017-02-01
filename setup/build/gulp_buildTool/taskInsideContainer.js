@@ -97,7 +97,7 @@ gulp.task('watch:distribution', ()=> {
 		], 
 		{interval: INTERVAL, usePolling: usePolling}, 
 		gulp.series(
-			'copy:apache'
+			'copy:conf:apache'
 		)
 	);
 	// serverSide
@@ -107,7 +107,7 @@ gulp.task('watch:distribution', ()=> {
 		], 
 		{interval: INTERVAL, usePolling: usePolling}, 
 		gulp.series(
-			'copy:phpini'
+			'copy:conf:phpini'
 		)
 	);
 

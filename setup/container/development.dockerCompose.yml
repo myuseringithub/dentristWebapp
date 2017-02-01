@@ -20,7 +20,7 @@ services:
       - ../../setup/build:/tmp/build/
       - ../../distribution:/tmp/distribution/
       - ../../privateRepository:/tmp/content/
-      # - "../../volume/apache/:/etc/apache2/sites-available/"
+      - "../../volume/apache/:/etc/apache2/sites-available/"
 
   mysql:
     extends:

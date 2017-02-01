@@ -3,7 +3,7 @@ FROM php:5.6-apache
 
 # PHP Extensions - install the PHP extensions we need
 RUN set -ex; \
-	apt-get update -y; apt-get -y upgrade; \
+	apt-get update -y; \
 	apt-get install -y libjpeg-dev libpng12-dev; \
 	rm -rf /var/lib/apt/lists/*; \
 	docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
@@ -35,7 +35,9 @@ RUN set -ex; \
 	# upstream tarballs include ./wordpress/ so this gives us /usr/src/wordpress
 	tar -xzf wordpress.tar.gz -C /usr/src/; mv /usr/src/wordpress /usr/src/site; \
 	rm wordpress.tar.gz; \
-	chown -R www-data:www-data /usr/src/site;
+	chown -R www-data:www-data /usr/src/site; \
+	mkdir -p /usr/src/; \
+	echo "<?php require $_SERVER[\'DOCUMENT_ROOT\'] . \'/wp-config.php\'" > /usr/src/wp-config.php;
 
 # Environment Variables & Arguments
 # default value is override if build argument is specified in docker compose.
@@ -62,13 +64,13 @@ RUN set -ex; \
 	# Apache enable sites configuration and remove default.
 	rm -r /etc/apache2/sites-enabled/*; \
 	# Install Dependencies:
+	apt-get -y update; apt-get -y upgrade; \
 	if [ "${DEPLOYMENT}" = "production" ]; then \
     	/tmp/shellScript/git.installation.sh; \
 		/tmp/shellScript/nodejs.installation.sh; \
 	    /tmp/shellScript/gulp.installation.sh; \
 		/tmp/shellScript/rsync.installation.sh; \
 	elif [ "${DEPLOYMENT}" = "development" ]; then \
-		apt-get -y update; apt-get -y upgrade; \
 		apt-get install -y nano; apt-get install -y vim; pecl install zip; \
 		# apt-get install -y --no-install-recommends vim nano;  \
     	/tmp/shellScript/git.installation.sh; \
@@ -81,13 +83,14 @@ RUN set -ex; \
 	if [ "${DEPLOYMENT}" = "production" ]; then \
 		# Gulp copy
 		node --harmony `which gulp` copy:distribution; \
-	fi; \
-	/tmp/shellScript/git.installation.sh uninstall; \
-	/tmp/shellScript/nodejs.installation.sh uninstall; \
-	/tmp/shellScript/gulp.installation.sh uninstall; \
-	/tmp/shellScript/rsync.installation.sh uninstall; \
-    rm -rf /var/lib/apt/lists/*; \
-	rm -r /tmp/shellScript/;
+		# Clean up
+		/tmp/shellScript/git.installation.sh uninstall; \
+		/tmp/shellScript/gulp.installation.sh uninstall; \
+		/tmp/shellScript/rsync.installation.sh uninstall; \
+		/tmp/shellScript/nodejs.installation.sh uninstall; \
+		rm -rf /var/lib/apt/lists/*; \
+		rm -r /tmp/shellScript/; \
+	fi;
 
 # Apparently when copied from windows, execution permissions should be granted.
 COPY ./setup/container/shellScript/wordpressContainer.entrypoint.sh /tmp/shellScript/

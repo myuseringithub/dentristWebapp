@@ -16,11 +16,13 @@ echo "😄 SZN: Build Currect file structure for Apache, PHP, & Wordpress Conten
 if [ "${DEPLOYMENT}" = "development" ]; then 
     # Copy distribution on Runtime as opposed to production, which is build into to image.
     node --harmony `which gulp` copy:distribution
-    node --harmony `which gulp` watch:distribution
+    # node --harmony `which gulp` copy:conf;
+    # node --harmony `which gulp` watch:distribution
     # node --harmony `which gulp` change:appPermissions
 fi
 
-# ⭐ Symlink Wordpress
+# ⭐ Symlink wordpress
+rm -rf /app/root/site;
 ln -s /usr/src/site /app/root/;
 
 # usage: file_env VAR [DEFAULT]

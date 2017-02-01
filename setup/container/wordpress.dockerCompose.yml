@@ -10,7 +10,7 @@ services:
     # All mounted volumes with specific host directory, replace the contents/files of the container folder. Thus the solution is to use entrypoint to populate the volume after it is created.
     volumes:
       - "../../volume/app:/app/"
-      - "../../volume/log:/var/log/apache2/"
+      # - "../../volume/log:/var/log/apache2/"
       - "../../volume/wordpressUploads:/app/root/content/uploads/"
     environment:
       DEPLOYMENT: 'production'

@@ -2,7 +2,6 @@
 
 source $(dirname -- "$0")/isInstalled.sh
 
-
 if [ -z "$1" ]; then 
     if [ $(programIsInstalled node) == "false" ]; then 
         # Install Nodejs
