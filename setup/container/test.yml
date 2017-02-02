@@ -10,7 +10,7 @@ networks:
 services:
 
   wordpress:
-    image: myuserindocker/dentristwebapp:latest
+    image: wordpress:latest
     # ports:
     #   - "8080:80"
     #   - "8043:80"
@@ -22,7 +22,7 @@ services:
       # WORDPRESS_DB_USER: MyUserIn8D
       # WORDPRESS_DB_PASSWORD: <g.,qPE:9U>21#B](
       WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: WebApp_Dentrist_Database
+      WORDPRESS_DB_NAME: wordpress
       # WORDPRESS_TABLE_PREFIX: c2xj4zrxos_
       WORDPRESS_DB_HOST: mysql:3306
     # entrypoint: updateDefaultEntrypoint.
@@ -42,9 +42,9 @@ services:
 
   mysql:
     image: mysql:latest
-    volumes:
+    # volumes:
     #     # - "./../volume/mysqlDatabase/:/var/lib/mysql"
-        - "../../volume/mysqlDatabase/:/docker-entrypoint-initdb.d"
+        # - "../../volume/mysqlDatabase/:/docker-entrypoint-initdb.d"
     environment:
         # MYSQL_ROOT_PASSWORD: wordpress
         # # MYSQL_USER: MyUserIn8D
@@ -53,27 +53,27 @@ services:
         MYSQL_ROOT_PASSWORD: wordpress
         # MYSQL_USER: MyUserIn8D
         # MYSQL_PASSWORD: <g.,qPE:9U>21#B](
-        MYSQL_DATABASE: WebApp_Dentrist_Database
+        MYSQL_DATABASE: wordpress
     networks:
       - default
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    environment:
-      - PMA_ARBITRARY=1
-    volumes:
-      - /sessions
-    # ports:
-    #  - 8081:80
-    # IMPORTANT: Check if extrahosts work. (How does "mysql" host translated to "db" host for usage in phpmyadmin when yaml version 3 is used.)
-    # links:
-    #   - mysql:db
-    extra_hosts:
-      - "mysql:db"
-    networks:
-      - default
-    labels:
-      - com.df.notify=true
-      - com.df.distribute=true
-      - com.df.servicePath=/phpmyadmin
-      - com.df.port=80
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin
+  #   environment:
+  #     - PMA_ARBITRARY=1
+  #   volumes:
+  #     - /sessions
+  #   # ports:
+  #   #  - 8081:80
+  #   # IMPORTANT: Check if extrahosts work. (How does "mysql" host translated to "db" host for usage in phpmyadmin when yaml version 3 is used.)
+  #   # links:
+  #   #   - mysql:db
+  #   extra_hosts:
+  #     - "mysql:db"
+  #   networks:
+  #     - default
+  #   labels:
+  #     - com.df.notify=true
+  #     - com.df.distribute=true
+  #     - com.df.servicePath=/phpmyadmin
+  #     - com.df.port=80
