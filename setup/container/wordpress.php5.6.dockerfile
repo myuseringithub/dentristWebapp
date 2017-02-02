@@ -49,8 +49,7 @@ COPY ./setup/shellScript/ /tmp/shellScript/
 COPY ./distribution /tmp/distribution
 COPY ./setup/build/gulp_buildTool /tmp/build/gulp_buildTool
 COPY ./privateRepository/ /tmp/privateRepository/
-# Volumes:
-VOLUME /app/
+
 WORKDIR /tmp/build/gulp_buildTool
 
 RUN set -ex; \
@@ -91,6 +90,9 @@ RUN set -ex; \
 		rm -rf /var/lib/apt/lists/*; \
 		rm -r /tmp/shellScript/; \
 	fi;
+
+# Importrant: volumes cannot be used as they will override content already in the container. Even if no specific directory to the host is mapped to the volume.
+# VOLUME 
 
 # Apparently when copied from windows, execution permissions should be granted.
 COPY ./setup/container/shellScript/wordpressContainer.entrypoint.sh /tmp/shellScript/

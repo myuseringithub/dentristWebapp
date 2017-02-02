@@ -15,15 +15,18 @@ services:
     links:
       - mysql
     working_dir: /tmp/build/gulp_buildTool/
-    volumes:
-      - ../../setup/container/shellScript:/tmp/shellScript/
-      - ../../setup/build:/tmp/build/
-      - ../../distribution:/tmp/distribution/
-      - ../../privateRepository:/tmp/privateRepository/
-      # - "../../volume/apache/:/etc/apache2/sites-available/"
-      - "../../volume/wordpressUploads:/app/root/content/uploads/"
-      - "../../volume/app:/app/"
-      - "../../volume/log:/var/log/apache2/"
+    # volumes:
+      # Development: 
+      # - ../../setup/container/shellScript:/tmp/shellScript/
+      # - ../../setup/build:/tmp/build/
+      # - ../../distribution:/tmp/distribution/
+      # - ../../privateRepository:/tmp/privateRepository/
+      # - "../../volume/wordpressUploads:/app/root/content/uploads/"
+      # - "../../volume/app:/app/"
+      # - "../../volume/log:/var/log/apache2/"
+      # # - "../../volume/apache/:/etc/apache2/sites-available/"
+      # Production-like: 
+      # - "../../volume/wordpressUploads:/app/root/content/uploads/"
 
   mysql:
     extends:
@@ -38,4 +41,3 @@ services:
       - mysql
     links:
       - mysql:db
-

@@ -1,21 +1,15 @@
 #!/usr/bin/env bash
 # ./setup/run.sh <functionName>
 
-production.container() {
-    # IMPORTANT: should open port 8085 to localhost from docker-machine.
-    # Doesn't work inside docker-machine even if port is open for localhost. Only works directly on host.
-    # Run production containers.
-    docker-compose -f ./setup/container/production.dockerCompose.yml up
-}
-
-production.stack() { # TODO: 
-    docker-compose -f ./setup/container/production.dockerCompose.yml up
+production.stack() { # ⭐ Run Docker swarm services.
+    
+    docker stack deploy --compose-file ./setup/container/production.dockerComposeStack.yml
 }
 
 production.service() { # TODO: 
-    docker service create --name webappDentristApp --network webappDentrist dentristwebapp:latest
-    docker service create --name webappDentristMysql --network webappDentrist mysql:latest
-    docker service create --name webappDentristPhpmyadmin --network webappDentrist phpmyadmin:latest
+    # docker service create --name webappDentristApp --network webappDentrist dentristwebapp:latest
+    # docker service create --name webappDentristMysql --network webappDentrist mysql:latest
+    # docker service create --name webappDentristPhpmyadmin --network webappDentrist phpmyadmin:latest
 }
 
 development() { # ⭐ Run locally either for development or production like testing.
@@ -49,6 +43,8 @@ deployment.buildImage() { # ⭐
 
     # Problem cannot pass arguments to dockerfile
     docker-compose -f ./setup/container/deployment.dockerCompose.yml build buildImage
+    # or 
+    docker-compose -f ./setup/container/development.dockerCompose.yml build wordpress
 
     # Docker CLI implimentation :
     # context is relative to current working directory not like in compose which is relative.

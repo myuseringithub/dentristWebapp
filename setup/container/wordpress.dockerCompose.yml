@@ -8,7 +8,9 @@ services:
       - "80:80"
       - "443:443"
     # All mounted volumes with specific host directory, replace the contents/files of the container folder. Thus the solution is to use entrypoint to populate the volume after it is created.
-    # volumes:
+    volumes:
+      - "/app/"
+      - "/var/log/apache2/"
     environment:
       DEPLOYMENT: 'production'
       WORDPRESS_DB_HOST: mysql:3306
