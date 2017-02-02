@@ -19,11 +19,8 @@ services:
     #   - "/var/log/apache2/"
     environment:
       DEPLOYMENT: production
-      # WORDPRESS_DB_USER: MyUserIn8D
-      # WORDPRESS_DB_PASSWORD: <g.,qPE:9U>21#B](
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
-      # WORDPRESS_TABLE_PREFIX: c2xj4zrxos_
       WORDPRESS_DB_HOST: mysql:3306
     # entrypoint: updateDefaultEntrypoint.
     deploy:
@@ -46,13 +43,7 @@ services:
     #     # - "./../volume/mysqlDatabase/:/var/lib/mysql"
         # - "../../volume/mysqlDatabase/:/docker-entrypoint-initdb.d"
     environment:
-        # MYSQL_ROOT_PASSWORD: wordpress
-        # # MYSQL_USER: MyUserIn8D
-        # # MYSQL_PASSWORD: <g.,qPE:9U>21#B](
-        # MYSQL_DATABASE: WebApp_Dentrist_Database
         MYSQL_ROOT_PASSWORD: wordpress
-        # MYSQL_USER: MyUserIn8D
-        # MYSQL_PASSWORD: <g.,qPE:9U>21#B](
         MYSQL_DATABASE: wordpress
     networks:
       - default
