@@ -2,15 +2,15 @@
 # ./setup/run.sh <functionName>
 
 production.stack() { # ⭐ Run Docker swarm services.
-    
-    docker stack deploy --compose-file ./setup/container/production.dockerComposeStack.yml
+    # Requires: proxy network.
+    docker stack deploy --compose-file ./setup/container/production.dockerComposeStack.yml dentristwebapp
 }
 
-production.service() { # TODO: 
-    # docker service create --name webappDentristApp --network webappDentrist dentristwebapp:latest
-    # docker service create --name webappDentristMysql --network webappDentrist mysql:latest
-    # docker service create --name webappDentristPhpmyadmin --network webappDentrist phpmyadmin:latest
-}
+# production.service() { # TODO: 
+#     # docker service create --name webappDentristApp --network webappDentrist dentristwebapp:latest
+#     # docker service create --name webappDentristMysql --network webappDentrist mysql:latest
+#     # docker service create --name webappDentristPhpmyadmin --network webappDentrist phpmyadmin:latest
+# }
 
 development() { # ⭐ Run locally either for development or production like testing.
     export DEPLOYMENT=production
