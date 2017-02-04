@@ -1,0 +1,63 @@
+version: '3'
+
+networks: 
+  default:
+    external: false
+  proxy:
+    external: true
+
+services:
+
+  wordpress:
+    image: myuserindocker/dentristwebapp:latest
+    volumes:
+      # - "$pwd/volume/app:/app"
+      - "$pwd/volume/log:/var/log/apache2"
+      - "$pwd/volume/wordpressUploads:/app/root/content/uploads/"
+    environment:
+      DEPLOYMENT: production
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: WebApp_Dentrist_Database
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      labels:
+        - com.df.notify=true
+        - com.df.distribute=true
+        - com.df.servicePath=/
+        - com.df.port=80
+    networks:
+      - default
+      - proxy
+
+  mysql:
+    image: mysql:latest
+    volumes:
+        - "$pwd/volume/mysqlData/:/var/lib/mysql"
+        - "$pwd/volume/mysqlDatabase/:/docker-entrypoint-initdb.d"
+    environment:
+        # MYSQL_ROOT_PASSWORD: wordpress
+        MYSQL_ROOT_PASSWORD: wordpress
+        MYSQL_DATABASE: WebApp_Dentrist_Database
+    networks:
+      - default
+
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin
+  #   environment:
+  #     - PMA_ARBITRARY=1
+  #   volumes:
+  #     - /sessions
+  #   extra_hosts:
+  #     - "mysql:db"
+  #   networks:
+  #     - default
+  #     deploy:
+  #     labels:
+  #       - com.df.notify=true
+  #       - com.df.distribute=true
+  #       - com.df.servicePath=/phpmyadmin
+  #       - com.df.port=80

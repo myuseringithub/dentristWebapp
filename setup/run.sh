@@ -2,8 +2,15 @@
 # ./setup/run.sh <functionName>
 
 production.stack() { # ⭐ Run Docker swarm services.
-    # Requires: proxy network.
-    docker stack deploy --compose-file ./setup/container/production.dockerComposeStack.yml dentristwebapp
+    # TODO: Fix SSL certificate for proxy.
+    # Proxy:
+    docker network create --driver overlay proxy
+    curl -o proxy-docker-compose-stack.yml https://raw.githubusercontent.com/vfarcic/docker-flow-proxy/master/docker-compose-stack.yml
+    docker stack deploy -c proxy-docker-compose-stack.yml proxy
+    rm proxy-docker-compose-stack.yml
+
+    # Deploy stack: (Requires proxy network.)
+    docker stack deploy --compose-file ./setup/container/production.dockerStack.yml dentristwebapp
 }
 
 # production.service() { # TODO: 
