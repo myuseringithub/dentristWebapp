@@ -9,8 +9,10 @@ production.stack() { # ⭐ Run Docker swarm services.
     docker stack deploy -c proxy-docker-compose-stack.yml proxy
     rm proxy-docker-compose-stack.yml
 
+    # As docker stack schedualer requires absolute paths MSYS_NO_PATHCONV should be on. i.e. disable path conversion for Windows.
+    export MSYS_NO_PATHCONV=1
     # Deploy stack: (Requires proxy network.)
-    docker stack deploy --compose-file ./setup/container/production.dockerStack.yml dentristwebapp
+    docker stack deploy -c ./setup/container/production.dockerStack.yml dentristwebapp
 }
 
 # production.service() { # TODO: 

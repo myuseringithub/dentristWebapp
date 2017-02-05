@@ -10,10 +10,10 @@ services:
 
   wordpress:
     image: myuserindocker/dentristwebapp:latest
-    volumes:
-      # - "$pwd/volume/app:/app"
-      - "$pwd/volume/log:/var/log/apache2"
-      - "$pwd/volume/wordpressUploads:/app/root/content/uploads/"
+    # volumes:
+    #   # - "$pwd/volume/app:/app"
+    #   - "$pwd/volume/log:/var/log/apache2"
+    #   - "$pwd/volume/wordpressUploads:/app/root/content/uploads/"
     environment:
       DEPLOYMENT: production
       WORDPRESS_DB_HOST: mysql:3306
@@ -37,7 +37,7 @@ services:
     image: mysql:latest
     volumes:
         - "$pwd/volume/mysqlData/:/var/lib/mysql"
-        - "$pwd/volume/mysqlDatabase/:/docker-entrypoint-initdb.d"
+        # - "$pwd/volume/mysqlDatabase/:/docker-entrypoint-initdb.d"
     environment:
         # MYSQL_ROOT_PASSWORD: wordpress
         MYSQL_ROOT_PASSWORD: wordpress
