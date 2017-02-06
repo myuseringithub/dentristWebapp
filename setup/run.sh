@@ -4,13 +4,14 @@
 production.stack() { # ⭐ Run Docker swarm services.
     # TODO: Fix SSL certificate for proxy.
     # Proxy:
-    docker network create --driver overlay proxy
+    # docker network create --driver overlay proxy
     curl -o proxy-docker-compose-stack.yml https://raw.githubusercontent.com/vfarcic/docker-flow-proxy/master/docker-compose-stack.yml
     docker stack deploy -c proxy-docker-compose-stack.yml proxy
     rm proxy-docker-compose-stack.yml
 
     # As docker stack schedualer requires absolute paths MSYS_NO_PATHCONV should be on. i.e. disable path conversion for Windows.
     export MSYS_NO_PATHCONV=1
+    # And './' volume paths should be replaced with "$PWD/" in order for it to work.
     # Deploy stack: (Requires proxy network.)
     docker stack deploy -c ./setup/container/production.dockerStack.yml dentristwebapp
 }
