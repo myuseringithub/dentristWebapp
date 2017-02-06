@@ -12,6 +12,12 @@ production.stack() { # ⭐ Run Docker swarm services.
     # As docker stack schedualer requires absolute paths MSYS_NO_PATHCONV should be on. i.e. disable path conversion for Windows.
     export MSYS_NO_PATHCONV=1
     # And './' volume paths should be replaced with "$PWD/" in order for it to work.
+    # Create necessary volume folders if not present:
+    mkdir -p ./volume/wordpressUploads
+    mkdir -p ./volume/log
+    mkdir -p ./volume/app
+    mkdir -p ./volume/mysqlDatabase
+    mkdir -p ./volume/mysqlData
     # Deploy stack: (Requires proxy network.)
     docker stack deploy -c ./setup/container/production.dockerStack.yml dentristwebapp
 }
