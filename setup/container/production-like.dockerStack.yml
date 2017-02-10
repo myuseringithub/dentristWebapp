@@ -6,25 +6,17 @@ networks:
   proxy_default:
     external: true
 
-# volumes: 
-#   dentrist:
-#     driver: rexray
-
 services:
 
   wordpress:
     image: myuserindocker/dentristwebapp:latest
-    # ports:
-    #   - 80:80
-    #   - 443:443
     volumes:
-      - "/app"
-      - "/mnt/datadisk-1/dentrist/log:/var/log/apache2"
-      - "/mnt/datadisk-1/dentrist/wordpressUploads:/app/root/content/uploads/"
+      # - "$PWD/volume/app:/app"
+      # - "$PWD/volume/log:/var/log/apache2"
+      - "$PWD/volume/wordpressUploads:/app/root/content/uploads/"
     environment:
       DEPLOYMENT: production
       WORDPRESS_DB_HOST: mysql:3306
-      # WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: WebApp_Dentrist_Database
     deploy:
@@ -43,17 +35,16 @@ services:
         - com.df.reqMode=tcp
     networks:
       - default
-      - proxy_default
+      - proxy
 
   mysql:
     image: mysql:latest
     volumes:
-        - "/mnt/datadisk-1/dentrist/mysqlData/:/var/lib/mysql"
-        - "/mnt/datadisk-1/dentrist/mysqlDatabase/:/docker-entrypoint-initdb.d"
+        - "$PWD/volume/mysqlData/:/var/lib/mysql"
+        - "$PWD/volume/mysqlDatabase/:/docker-entrypoint-initdb.d"
     environment:
+        # MYSQL_ROOT_PASSWORD: wordpress
         MYSQL_ROOT_PASSWORD: wordpress
-        # MYSQL_USER: wordpress
-        # MYSQL_PASSWORD: wordpress
         MYSQL_DATABASE: WebApp_Dentrist_Database
     networks:
       - default

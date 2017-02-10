@@ -2,6 +2,20 @@
 # ./setup/run.sh <functionName>
 
 production.stack() { # ⭐ Run Docker swarm services.
+    # Create folders in mount volumes:
+    docker-machine ssh $VM-1
+    VolumeBasePath=/mnt/datadisk-1/dentrist
+    sudo mkdir -p $VolumeBasePath/wordpressUploads
+    sudo mkdir -p $VolumeBasePath/app
+    sudo mkdir -p $VolumeBasePath/log
+    sudo mkdir -p $VolumeBasePath/mysqlDatabase
+    sudo mkdir -p $VolumeBasePath/mysqlData
+    
+    # Deploy stack: (Requires proxy network.)
+    docker stack deploy -c ./setup/container/production.dockerStack.yml dentristwebapp
+}
+
+production-like.stack() { # ⭐ Run Docker swarm services.
     # TODO: Fix SSL certificate for proxy.
     # Proxy:
     # docker network create --driver overlay proxy
@@ -19,7 +33,7 @@ production.stack() { # ⭐ Run Docker swarm services.
     mkdir -p ./volume/mysqlDatabase
     mkdir -p ./volume/mysqlData
     # Deploy stack: (Requires proxy network.)
-    docker stack deploy -c ./setup/container/production.dockerStack.yml dentristwebapp
+    docker stack deploy -c ./setup/container/production-like.dockerStack.yml dentristwebapp
 }
 
 # production.service() { # TODO: 
