@@ -66,11 +66,19 @@ deployment.staging() { # ⭐
 }
 
 deployment.buildImage() { # ⭐
-    # development / production
+    # 1. development / production
     export DEPLOYMENT=production
     export DEPLOYMENT=development
     # export COMPOSE_PROJECT_NAME=dentrist # Not needed as name is taken from image field.
 
+    # 2. create and add privateRepository content in volumes:
+    mkdir -p ./volume/sslCertificate
+    mkdir -p ./volume/wordpressConfiguration
+
+    # 3. Build Source COde:
+    ./setup/run.sh deployment.buildDistribution
+
+    # 4.
     # Problem cannot pass arguments to dockerfile
     docker-compose -f ./setup/container/deployment.dockerCompose.yml build buildImage
     # or 

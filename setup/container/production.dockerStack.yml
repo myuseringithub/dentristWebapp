@@ -18,7 +18,7 @@ services:
     #   - 80:80
     #   - 443:443
     volumes:
-      - "/app"
+      # - "/app"
       - "/mnt/datadisk-1/dentrist/log:/var/log/apache2"
       - "/mnt/datadisk-1/dentrist/wordpressUploads:/app/root/content/uploads/"
     environment:
