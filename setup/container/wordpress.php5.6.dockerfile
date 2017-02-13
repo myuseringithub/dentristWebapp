@@ -44,7 +44,7 @@ RUN set -ex; \
 ARG DEPLOYMENT=production
 ENV DEPLOYMENT ${DEPLOYMENT}
 
-COPY ./setup/shellScript/ /tmp/shellScript/
+COPY ./appDeploymentLifecycle/deploymentEnvironment/shellScript/ /tmp/shellScript/
 # copy distribution to image.
 COPY ./distribution /tmp/distribution
 COPY ./setup/build/gulp_buildTool /tmp/build/gulp_buildTool
