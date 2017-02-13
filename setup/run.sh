@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 # ./setup/run.sh <functionName>
 
+development() { # ⭐ Run locally either for development or production like testing.
+    export DEPLOYMENT=development
+    docker-compose -f ./setup/container/development.dockerCompose.yml up
+}
+
 production.stack() { # ⭐ Run Docker swarm services.
     # Create folders in mount volumes:
     docker-machine ssh $VM-1
@@ -33,7 +38,7 @@ production-like.stack() { # ⭐ Run Docker swarm services.
     mkdir -p ./volume/mysqlDatabase
     mkdir -p ./volume/mysqlData
     # Deploy stack: (Requires proxy network.)
-    docker stack deploy -c ./setup/container/production-like.dockerStack.yml dentristwebapp
+    docker stack deploy -c ./setup/container/deployment.production-like.dockerStack.yml dentristwebapp
 }
 
 # production.service() { # TODO: 
@@ -42,10 +47,10 @@ production-like.stack() { # ⭐ Run Docker swarm services.
 #     # docker service create --name webappDentristPhpmyadmin --network webappDentrist phpmyadmin:latest
 # }
 
-development() { # ⭐ Run locally either for development or production like testing.
+deployment.production-like.container() {
+    export COMPOSE_PROJECT_NAME=dentrist
     export DEPLOYMENT=production
-    export DEPLOYMENT=development
-    docker-compose -f ./setup/container/development.dockerCompose.yml up
+    docker-compose -f ./setup/container/deployment.production-like.dockerCompose.yml up
 }
 
 deployment.buildDistribution() { # ⭐
@@ -62,13 +67,13 @@ deployment.test() { # ⭐
 deployment.staging() { # ⭐
     # USAGE: docker-compose -f ./setup/deployment.dockerCompose.yml -f ./setup/development.dockerCompose.yml up --build wordpress localStagingTest
     # USAGE: docker-compose -f ./setup/deployment.dockerCompose.yml up --rm localStagingTest
-    docker-compose -f ./setup/container/deployment.dockerCompose.yml -f ./setup/container/development.dockerCompose.yml up wordpress localStagingTest
+    docker-compose -f ./setup/container/deployment.dockerCompose.yml -f ./setup/container/deployment.production-like.dockerCompose.yml up wordpress localStagingTest
 }
 
 deployment.buildImage() { # ⭐
     # 1. development / production
     export DEPLOYMENT=production
-    export DEPLOYMENT=development
+    # export DEPLOYMENT=development
     # export COMPOSE_PROJECT_NAME=dentrist # Not needed as name is taken from image field.
 
     # 2. create and add privateRepository content in volumes:
@@ -81,8 +86,6 @@ deployment.buildImage() { # ⭐
     # 4.
     # Problem cannot pass arguments to dockerfile
     docker-compose -f ./setup/container/deployment.dockerCompose.yml build buildImage
-    # or 
-    docker-compose -f ./setup/container/development.dockerCompose.yml build wordpress
 
     # Docker CLI implimentation :
     # context is relative to current working directory not like in compose which is relative.

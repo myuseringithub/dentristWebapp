@@ -13,7 +13,7 @@ networks:
 services:
 
   wordpress:
-    image: myuserindocker/dentristwebapp:latest
+    image: myuserindocker/dentrist-webapp:latest
     # ports:
     #   - 80:80
     #   - 443:443

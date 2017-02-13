@@ -9,7 +9,7 @@ networks:
 services:
 
   wordpress:
-    image: myuserindocker/dentristwebapp:latest
+    image: myuserindocker/dentrist-webapp:latest
     volumes:
       # - "$PWD/volume/app:/app"
       # - "$PWD/volume/log:/var/log/apache2"

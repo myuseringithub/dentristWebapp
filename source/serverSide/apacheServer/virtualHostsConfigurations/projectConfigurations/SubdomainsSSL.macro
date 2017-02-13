@@ -1,4 +1,4 @@
-<Macro SubdomainsSSH>
+<Macro SubdomainsSSL>
     SSLEngine on
     SSLCertificateFile ${SSLCertificatesPath}/all_subdomains.crt
     SSLCertificateKeyFile ${SSLCertificatesPath}/all_subdomains.key

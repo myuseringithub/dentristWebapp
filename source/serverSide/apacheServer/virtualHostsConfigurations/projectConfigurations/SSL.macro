@@ -1,0 +1,36 @@
+<Macro SSL>
+    # http://serverfault.com/questions/689942/apaches-deprecated-sslcertificatechainfile-directive-ah02559
+    SSLEngine on
+    SSLCertificateFile ${SSLCertificatesPath}/dentrist.combined.crt
+    SSLCertificateKeyFile ${SSLCertificatesPath}/dentrist.key
+    # SSLCertificateChainFile ${SSLCertificatesPath}/gd_bundle-g2-g1.crt
+
+    <Directory />
+        SSLRequireSSL
+    </Directory>
+
+    ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+    <Directory /usr/lib/cgi-bin>
+        AllowOverride None
+        Options -Indexes
+        Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+        Require all granted
+        SSLOptions +StdEnvVars
+    </Directory>
+
+    BrowserMatch "MSIE [2-6]" \
+        nokeepalive ssl-unclean-shutdown \
+        downgrade-1.0 force-response-1.0
+    BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
+
+    # Some response header settings including Content Security Policy.
+    <IfModule mod_headers.c>
+    # header command to notify the browser of wanted policies.
+    Header set Content-Security-Policy "upgrade-insecure-requests"
+    Header set Strict-Transport-Security "max-age=31536000;includeSubdomains"
+    </IfModule>
+
+    # Include settigns:
+    Include ${ApacheConfigPath}/sharedConfigurations/security-settings.conf
+
+</Macro>

@@ -7,24 +7,16 @@ services:
     extends:
       # relative to the position of current file.
       file: ./wordpress.dockerCompose.yml
-      service: wordpressBuild
-    image: dentrist-${DEPLOYMENT:-development}
+      service: wordpress
     environment:
-        DEPLOYMENT: ${DEPLOYMENT:-development}
+        DEPLOYMENT: ${DEPLOYMENT:-production}
     depends_on:
       - mysql
     links:
       - mysql
     working_dir: /tmp/build/gulp_buildTool/
     volumes:
-      - ../../setup/container/shellScript:/tmp/shellScript/
-      - ../../setup/build:/tmp/build/
-      - ../../distribution:/tmp/distribution/
-      - ../../privateRepository:/tmp/privateRepository/
-      - "../../volume/wordpressUploads:/app/root/content/uploads/"
-      - "../../volume/app:/app/"
-      - "../../volume/log:/var/log/apache2/"
-      - "../../volume/apache/:/etc/apache2/sites-available/"
+        - "../../volume/wordpressUploads:/app/root/content/uploads/"
 
   mysql:
     extends:

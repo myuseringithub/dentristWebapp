@@ -3,6 +3,7 @@ version: '2.1'
 services:
 
   wordpress:
+    image: myuserindocker/dentrist-webapp:latest
     container_name: wordpress
     ports:
       - "80:80"
@@ -17,10 +18,6 @@ services:
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: WebApp_Dentrist_Database
     # entrypoint: updateDefaultEntrypoint.sh
- 
-  wordpressImage:
-    extends: wordpress
-    image: myuserindocker/dentristwebapp:latest
 
   wordpressBuild:
     extends: wordpress
@@ -32,4 +29,3 @@ services:
     # name of local image to be built
     environment:
         DEPLOYMENT: ${DEPLOYMENT:-production}
-    image: dentrist-${DEPLOYMENT:-production}
