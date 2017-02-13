@@ -13,7 +13,6 @@ const TaskImplementationPath = path.join(GulpPath, 'taskImplementation/');
 
 module.exports = {
     // TODO: create object of constants http://stackoverflow.com/questions/10843572/how-to-create-javascript-constants-as-properties-of-objects-using-const-keyword
-
     ConfigPath,
     SourceCodePath,
     DestinationPath,

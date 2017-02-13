@@ -28,7 +28,7 @@ gulp.task('buildSourceCode',
 
 // Install dependencies (in distribution volume)
 gulp.task('install:bower', require(path.join(config.TaskImplementationPath, 'bower.js')) );
-gulp.task('install:jspm', require(path.join(config.TaskImplementationPath, 'jspm.js')) );
+gulp.task('install:jspm', require(path.join(config.TaskImplementationPath, 'jspm.js'))(process.env.NODEJS_VERSION) );
 gulp.task('install:composer:wordpressPlugins', require(path.join(config.TaskImplementationPath, 'wordpressPlugin.js')) );
 gulp.task('install:composer:wordpressMustUsePlugins', require(path.join(config.TaskImplementationPath, 'wordpressMustUsePlugin.js')) );
 gulp.task('change:appPermissions', require(path.join(config.TaskImplementationPath, 'changePermissions.js')) );
