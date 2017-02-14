@@ -21,12 +21,12 @@ production.stack() { # ⭐ Run Docker swarm services.
 }
 
 production-like.stack() { # ⭐ Run Docker swarm services.
-    # TODO: Fix SSL certificate for proxy.
     # Proxy:
     # docker network create --driver overlay proxy
-    curl -o proxy-docker-compose-stack.yml https://raw.githubusercontent.com/vfarcic/docker-flow-proxy/master/docker-compose-stack.yml
-    docker stack deploy -c proxy-docker-compose-stack.yml proxy
-    rm proxy-docker-compose-stack.yml
+    # curl -o proxy-docker-compose-stack.yml https://raw.githubusercontent.com/vfarcic/docker-flow-proxy/master/docker-compose-stack.yml
+    # docker stack deploy -c proxy-docker-compose-stack.yml proxy
+    # rm proxy-docker-compose-stack.yml
+    # redbird proxy
 
     # As docker stack schedualer requires absolute paths MSYS_NO_PATHCONV should be on. i.e. disable path conversion for Windows.
     export MSYS_NO_PATHCONV=1
