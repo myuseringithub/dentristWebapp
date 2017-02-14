@@ -15,8 +15,8 @@ services:
     environment:
       DEPLOYMENT: 'production'
       WORDPRESS_DB_HOST: mysql:3306
-      WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: WebApp_Dentrist_Database
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD:-wordpress}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME:-WebApp_Dentrist_Database}
     # entrypoint: updateDefaultEntrypoint.sh
 
   wordpressBuild:

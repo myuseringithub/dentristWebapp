@@ -56,7 +56,6 @@ deployment.production-like.container() {
 deployment.buildDistribution() { # ⭐
     # development / production
     export DEPLOYMENT=production
-    export DEPLOYMENT=development
     docker-compose -f ./setup/container/deployment.dockerCompose.yml up buildDistributionCode
 }
 
@@ -90,6 +89,8 @@ deployment.buildImage() { # ⭐
     # Docker CLI implimentation :
     # context is relative to current working directory not like in compose which is relative.
     # docker build --build-arg DEPLOYMENT=${DEPLOYMENT} --tag dentrist-${DEPLOYMENT} -f ./setup/container/wordpress.php5.6.dockerfile ./
+
+    # 5. tag image and push
 }
 
 # Important: call arguments verbatim. i.e. allows first argument to call functions inside file. So that it could be called as "./setup/run.sh <functionName>".
