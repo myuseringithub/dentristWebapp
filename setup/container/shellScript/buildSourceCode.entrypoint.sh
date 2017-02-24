@@ -4,6 +4,10 @@ echo "Deploying as ${DEPLOYMENT}";
 
 # ⭐ install dependencies / node modules (from packages.json) in working directory "/tmp/build/gulp_buildTool/" & update to latest versions
 npm install; npm update; 
+(
+    cd /tmp/appDeploymentLifecycle/gulp_buildTool; 
+    npm install; npm update;
+)
 gulp -v;
 
 # ⭐ Gulp - run bulid tasks
