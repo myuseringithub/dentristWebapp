@@ -1,6 +1,5 @@
 # Dentrist אתר הכנה למבחן הרישוי ברפואת שיניים
-![Screencast](/documentation/screenshot(1).jpg)
-![Screencast](/documentation/screenshot(2).jpg)
+![Screencast](/documentation/combinedScreenshot2.jpg)
 ![Screencast](/documentation/screenshot(3).jpg)
 
 # Articles section:
