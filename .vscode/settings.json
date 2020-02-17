@@ -1,5 +1,21 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-    "window.zoomLevel": 1,
+    "window.zoomLevel": -1,
     "jshint.enable": false,
+    "workbench.colorCustomizations": {
+        "activityBar.background": "#ff4b4e",
+        "activityBar.activeBorder": "#026000",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#026000",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "titleBar.activeBackground": "#ff4b4e",
+        "titleBar.inactiveBackground": "#ff4b4e99",
+        "titleBar.activeForeground": "#15202b",
+        "titleBar.inactiveForeground": "#15202b99",
+        "statusBar.background": "#ff4b4e",
+        "statusBarItem.hoverBackground": "#ff181c",
+        "statusBar.foreground": "#15202b"
+    },
+    "peacock.remoteColor": "#ff7e80",
 }
